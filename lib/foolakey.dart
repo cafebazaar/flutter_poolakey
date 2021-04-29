@@ -30,14 +30,21 @@ class Foolakey {
     return await _channel.invokeMethod('consume', {'purchase_token': purchaseToken});
   }
   
-  static Future<PurchaseInfo?> querySubscribedProduct(String productId) async {
-    final map = await _channel.invokeMethod('query_purchased_item', {'product_id': productId});
+  static Future<PurchaseInfo?> queryPurchasedProduct(String productId) async {
+    final map = await _channel.invokeMethod('query_purchased_product', {'product_id': productId});
     if (map == null) {
       return null;
     }
     return PurchaseInfo.fromMap(map);
   }
 
+  static Future<PurchaseInfo?> querySubscribedProduct(String productId) async {
+    final map = await _channel.invokeMethod('query_subscribed_product', {'product_id': productId});
+    if (map == null) {
+      return null;
+    }
+    return PurchaseInfo.fromMap(map);
+  }
 }
 
 class PurchaseInfo {
