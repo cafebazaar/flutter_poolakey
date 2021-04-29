@@ -78,7 +78,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   ElevatedButton(onPressed: _handlePurchase, child: Text('PURCHASE')),
-                  ElevatedButton(onPressed: () {}, child: Text('SUBSCRIBE')),
+                  ElevatedButton(onPressed: _handleSubscribe, child: Text('SUBSCRIBE')),
                   ElevatedButton(onPressed: () {}, child: Text('CHECK IF USER PURCHASED THIS ITEM')),
                   ElevatedButton(onPressed: () {}, child: Text('CHECK IF USER SUBSCRIBED THIS ITEM')),
                   Expanded(child: Container()),
@@ -100,7 +100,36 @@ class _HomePageState extends State<HomePage> {
     try {
       final purchaseInfo = await Foolakey.purchase(productId);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Purchase success'),
+        content: Text('Successful Purchase'),
+        action: SnackBarAction(
+          label: 'Purchase Info',
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                content: SingleChildScrollView(
+                  child: Text(purchaseInfo.toString()),
+                ),
+              ),
+            );
+          },
+        ),
+      ));
+    } on PlatformException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.code)));
+    }
+  }
+
+  void _handleSubscribe() async {
+    final productId = _productIdController.text;
+    if (productId.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Please enter the product id')));
+      return;
+    }
+    try {
+      final purchaseInfo = await Foolakey.subscribe(productId);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Successful Subscription'),
         action: SnackBarAction(
           label: 'Purchase Info',
           onPressed: () {

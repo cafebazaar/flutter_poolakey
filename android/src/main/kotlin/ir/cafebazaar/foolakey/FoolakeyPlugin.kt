@@ -58,6 +58,11 @@ class FoolakeyPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
                 val payload = call.argument<String>("payload")!!
                 purchase(productId, payload, result)
             }
+            "subscribe" -> {
+                val productId = call.argument<String>("product_id")!!
+                val payload = call.argument<String>("payload")!!
+                subscribe(productId, payload, result)
+            }
             else -> result.notImplemented()
         }
     }
@@ -111,6 +116,44 @@ class FoolakeyPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
             )
         ) {
             purchaseFlowBegan {
+                // Nothing
+            }
+            failedToBeginFlow {
+                result.error("FAILED_TO_BEGIN_FLOW", it.toString(), null)
+            }
+        }
+    }
+
+    private fun subscribe(productId: String, payload: String, result: Result) {
+        if (paymentConnection.getState() != ConnectionState.Connected) {
+            result.error("PAYMENT_CONNECTION_IS_NOT_CONNECTED", "PaymentConnection is not connected (state: ${paymentConnection.getState()})", null)
+        }
+
+        purchaseCallback = {
+            purchaseSucceed {
+                result.success(it.toMap())
+                purchaseCallback = null
+            }
+            purchaseCanceled {
+                result.error("SUBSCRIBE_CANCELLED", "Subscription flow has been canceled", null)
+                purchaseCallback = null
+            }
+            purchaseFailed {
+                result.error("SUBSCRIBE_FAILED", "Subscription flow has been failed", null)
+                purchaseCallback = null
+            }
+        }
+
+        payment.subscribeProduct(
+            activity = requireActivity,
+            request = PurchaseRequest(
+                productId = productId,
+                requestCode = SUBSCRIBE_REQUEST_CODE,
+                payload = payload
+            )
+        ) {
+            purchaseFlowBegan {
+                // Nothing
             }
             failedToBeginFlow {
                 result.error("FAILED_TO_BEGIN_FLOW", it.toString(), null)
