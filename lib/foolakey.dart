@@ -61,7 +61,7 @@ class PurchaseInfo {
   PurchaseInfo(this.orderId, this.purchaseToken, this.payload, this.packageName, this.purchaseState, this.purchaseTime,
       this.productId, this.originalJson, this.dataSignature);
 
-  factory PurchaseInfo.fromMap(Map<String, dynamic> typeName) {
+  factory PurchaseInfo.fromMap(Map<dynamic, dynamic> typeName) {
     return PurchaseInfo(
       typeName['orderId'] as String,
       typeName['purchaseToken'] as String,

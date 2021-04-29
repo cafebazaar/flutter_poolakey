@@ -16,7 +16,7 @@ class ServiceStatusWidget extends StatelessWidget {
             context: context,
             builder: (context) => AlertDialog(
               content: SingleChildScrollView(
-                child: Text((snapshot.error as PlatformException).stacktrace),
+                child: Text((snapshot.error as PlatformException).stacktrace!),
               ),
             ),
           );

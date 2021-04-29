@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:foolakey/foolakey.dart';
+import 'package:foolakey_example/widgets/purchase_info_dialog.dart';
 
 import 'widgets/service_status_widget.dart';
 
@@ -13,12 +14,10 @@ class _HomePageState extends State<HomePage> {
   final _inAppBillingKey =
       'MIHNMA0GCSqGSIb3DQEBAQUAA4G7ADCBtwKBrwDbkRScfggn+JSs+DzcZK20ZbxKPKv060aekC4dxqapamlgf9PncC5/4sqhUU4SdeKE770H1s7dJhmV5QEnzLawJTgiTzD3RFcadl2H4dduro/KxVyAe5nNKE/Xg+uRalLU/Hw9Or44m2xDyWESWj8sqweaGDUnsoHWJFsyVwwIj15fx3cDX6kjObC0gYns1o79x+COWCqyIlDwE2Pf7Xum55FASKFH8lqlYpEzR38CAwEAAQ==';
 
-  bool _customPurchases;
-  TextEditingController _productIdController;
+  late TextEditingController _productIdController;
 
   @override
   void initState() {
-    _customPurchases = false;
     _productIdController = new TextEditingController();
     super.initState();
   }
@@ -53,34 +52,35 @@ class _HomePageState extends State<HomePage> {
                   TextField(
                     controller: _productIdController,
                     decoration: InputDecoration(labelText: 'Product id'),
+                    autofocus: false,
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _customPurchases = !_customPurchases;
-                      });
+                  SizedBox(
+                    height: 24,
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      _handlePurchase(context);
                     },
-                    child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 8),
-                      child: Row(
-                        children: [
-                          Switch(
-                            value: _customPurchases,
-                            onChanged: (newValue) {
-                              setState(() {
-                                _customPurchases = newValue;
-                              });
-                            },
-                          ),
-                          Text('Consume Purchase')
-                        ],
-                      ),
-                    ),
+                    child: Text('PURCHASE'),
                   ),
-                  ElevatedButton(onPressed: _handlePurchase, child: Text('PURCHASE')),
-                  ElevatedButton(onPressed: _handleSubscribe, child: Text('SUBSCRIBE')),
-                  ElevatedButton(onPressed: _handleQueryPurchasedProduct, child: Text('CHECK IF USER PURCHASED THIS PRODUCT')),
-                  ElevatedButton(onPressed: _handleQuerySubscribedProduct, child: Text('CHECK IF USER SUBSCRIBED THIS PRODUCT')),
+                  ElevatedButton(
+                    onPressed: () {
+                      _handleSubscribe(context);
+                    },
+                    child: Text('SUBSCRIBE'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      _handleQueryPurchasedProduct(context);
+                    },
+                    child: Text('CHECK IF USER PURCHASED THIS PRODUCT'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      _handleQuerySubscribedProduct(context);
+                    },
+                    child: Text('CHECK IF USER SUBSCRIBED THIS PRODUCT'),
+                  ),
                   Expanded(child: Container()),
                 ],
               ),
@@ -91,7 +91,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void _handlePurchase() async {
+  void _handlePurchase(BuildContext context) async {
     final productId = _productIdController.text;
     if (productId.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Please enter the product id')));
@@ -104,22 +104,13 @@ class _HomePageState extends State<HomePage> {
         action: SnackBarAction(
           label: 'Purchase Info',
           onPressed: () {
-            showDialog(
-              context: context,
-              builder: (context) => AlertDialog(
-                content: Column(
-                  children: [
-                    Expanded(child: Text(purchaseInfo.toString())),
-                    TextButton(
-                      onPressed: () async {
-                        _handleConsume(purchaseInfo.purchaseToken);
-                        Navigator.of(context).pop();
-                      },
-                      child: Text('Consume'),
-                    )
-                  ],
-                ),
-              ),
+            PurchaseInfoDialog.show(
+              context,
+              purchaseInfo,
+              showConsume: true,
+              onConsumeClicked: () {
+                _handleConsume(purchaseInfo.purchaseToken);
+              },
             );
           },
         ),
@@ -133,13 +124,12 @@ class _HomePageState extends State<HomePage> {
     try {
       await Foolakey.consume(purchaseToken);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Successful Consume')));
-    } catch (e) {
+    } on PlatformException catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.code)));
     }
-
   }
 
-  void _handleSubscribe() async {
+  void _handleSubscribe(BuildContext context) async {
     final productId = _productIdController.text;
     if (productId.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Please enter the product id')));
@@ -152,14 +142,7 @@ class _HomePageState extends State<HomePage> {
         action: SnackBarAction(
           label: 'Purchase Info',
           onPressed: () {
-            showDialog(
-              context: context,
-              builder: (context) => AlertDialog(
-                content: SingleChildScrollView(
-                  child: Text(purchaseInfo.toString()),
-                ),
-              ),
-            );
+            PurchaseInfoDialog.show(context, purchaseInfo);
           },
         ),
       ));
@@ -168,7 +151,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  void _handleQueryPurchasedProduct() async {
+  void _handleQueryPurchasedProduct(BuildContext context) async {
     final productId = _productIdController.text;
     if (productId.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Please enter the product id')));
@@ -176,53 +159,45 @@ class _HomePageState extends State<HomePage> {
     }
     try {
       final purchaseInfo = await Foolakey.queryPurchasedProduct(productId);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('You have purchased this product'),
-        action: SnackBarAction(
-          label: 'Purchase Info',
-          onPressed: () {
-            showDialog(
-              context: context,
-              builder: (context) => AlertDialog(
-                content: SingleChildScrollView(
-                  child: Text(purchaseInfo.toString()),
-                ),
-              ),
-            );
-          },
-        ),
-      ));
+      if (purchaseInfo == null) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Not found!')));
+        return;
+      }
+
+      PurchaseInfoDialog.show(
+        context,
+        purchaseInfo,
+        showConsume: true,
+        onConsumeClicked: () {
+          _handleConsume(purchaseInfo.purchaseToken);
+        },
+      );
     } on PlatformException catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.code)));
     }
   }
 
-  void _handleQuerySubscribedProduct() async {
+  void _handleQuerySubscribedProduct(BuildContext context) async {
     final productId = _productIdController.text;
     if (productId.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Please enter the product id')));
       return;
     }
     try {
-      final purchaseInfo = await Foolakey.queryPurchasedProduct(productId);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('You have subscribed to this product'),
-        action: SnackBarAction(
-          label: 'Purchase Info',
-          onPressed: () {
-            showDialog(
-              context: context,
-              builder: (context) => AlertDialog(
-                content: SingleChildScrollView(
-                  child: Text(purchaseInfo.toString()),
-                ),
-              ),
-            );
-          },
-        ),
-      ));
+      final purchaseInfo = await Foolakey.querySubscribedProduct(productId);
+      if (purchaseInfo == null) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Not found!')));
+        return;
+      }
+      PurchaseInfoDialog.show(context, purchaseInfo);
     } on PlatformException catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.code)));
     }
+  }
+
+  @override
+  void dispose() {
+    _productIdController.dispose();
+    super.dispose();
   }
 }
