@@ -67,6 +67,10 @@ class FoolakeyPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
                 val purchaseToken = call.argument<String>("purchase_token")!!
                 consume(purchaseToken, result)
             }
+            "query_purchased_item" -> {
+                val productId = call.argument<String>("product_id")!!
+                queryPurchasedItem(productId, result)
+            }
             else -> result.notImplemented()
         }
     }
@@ -172,6 +176,21 @@ class FoolakeyPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
             }
             consumeFailed {
                 result.error("CONSUME_FAILED", it.toString(), null)
+            }
+        }
+    }
+
+    private fun queryPurchasedItem(productId: String, result: Result) {
+        if (paymentConnection.getState() == ConnectionState.Connected) {
+            payment.getPurchasedProducts {
+                querySucceed { purchasedItems ->
+                    purchasedItems.find { it.productId == productId }
+                        ?.also { result.success(it.toMap()) }
+                        ?: run { result.success(null) }
+                }
+                queryFailed {
+                    result.error("QUERY_PURCHASED_ITEM_FAILED", it.toString(), null)
+                }
             }
         }
     }

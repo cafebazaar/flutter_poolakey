@@ -6,8 +6,9 @@ import 'package:flutter/services.dart';
 class Foolakey {
   static const MethodChannel _channel = const MethodChannel('ir.cafebazaar.foolakey');
 
-  static Future<bool> init(String inAppBillingKey) =>
-      _channel.invokeMethod('init', {'in_app_billing_key': inAppBillingKey});
+  static Future<bool> init(String inAppBillingKey) async {
+    return await _channel.invokeMethod('init', {'in_app_billing_key': inAppBillingKey});
+  }
 
   static Future<PurchaseInfo> purchase(
     String productId, {
@@ -25,8 +26,17 @@ class Foolakey {
     return PurchaseInfo.fromMap(map);
   }
 
-  static Future<bool> consume(String purchaseToken) =>
-      _channel.invokeMethod('consume', {'purchase_token': purchaseToken});
+  static Future<bool> consume(String purchaseToken) async {
+    return await _channel.invokeMethod('consume', {'purchase_token': purchaseToken});
+  }
+  
+  static Future<PurchaseInfo?> querySubscribedProduct(String productId) async {
+    final map = await _channel.invokeMethod('query_purchased_item', {'product_id': productId});
+    if (map == null) {
+      return null;
+    }
+    return PurchaseInfo.fromMap(map);
+  }
 
 }
 
