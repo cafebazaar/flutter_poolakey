@@ -107,8 +107,17 @@ class _HomePageState extends State<HomePage> {
             showDialog(
               context: context,
               builder: (context) => AlertDialog(
-                content: SingleChildScrollView(
-                  child: Text(purchaseInfo.toString()),
+                content: Column(
+                  children: [
+                    Expanded(child: Text(purchaseInfo.toString())),
+                    TextButton(
+                      onPressed: () async {
+                        _handleConsume(purchaseInfo.purchaseToken);
+                        Navigator.of(context).pop();
+                      },
+                      child: Text('Consume'),
+                    )
+                  ],
                 ),
               ),
             );
@@ -118,6 +127,16 @@ class _HomePageState extends State<HomePage> {
     } on PlatformException catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.code)));
     }
+  }
+
+  void _handleConsume(String purchaseToken) async {
+    try {
+      await Foolakey.consume(purchaseToken);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Successful Consume')));
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.code)));
+    }
+
   }
 
   void _handleSubscribe() async {

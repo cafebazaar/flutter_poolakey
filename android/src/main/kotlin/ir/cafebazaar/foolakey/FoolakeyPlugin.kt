@@ -63,6 +63,10 @@ class FoolakeyPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
                 val payload = call.argument<String>("payload")!!
                 subscribe(productId, payload, result)
             }
+            "consume" -> {
+                val purchaseToken = call.argument<String>("purchase_token")!!
+                consume(purchaseToken, result)
+            }
             else -> result.notImplemented()
         }
     }
@@ -157,6 +161,17 @@ class FoolakeyPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
             }
             failedToBeginFlow {
                 result.error("FAILED_TO_BEGIN_FLOW", it.toString(), null)
+            }
+        }
+    }
+
+    private fun consume(purchaseToken: String, result: Result) {
+        payment.consumeProduct(purchaseToken) {
+            consumeSucceed {
+                result.success(true)
+            }
+            consumeFailed {
+                result.error("CONSUME_FAILED", it.toString(), null)
             }
         }
     }

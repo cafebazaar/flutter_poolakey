@@ -24,6 +24,10 @@ class Foolakey {
     final map = await _channel.invokeMethod('subscribe', {'product_id': productId, 'payload': payload});
     return PurchaseInfo.fromMap(map);
   }
+
+  static Future<bool> consume(String purchaseToken) =>
+      _channel.invokeMethod('consume', {'purchase_token': purchaseToken});
+
 }
 
 class PurchaseInfo {
