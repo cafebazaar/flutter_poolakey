@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:foolakey/foolakey.dart';
 
 import 'widgets/service_status_widget.dart';
@@ -12,11 +13,13 @@ class _HomePageState extends State<HomePage> {
   final _inAppBillingKey =
       'MIHNMA0GCSqGSIb3DQEBAQUAA4G7ADCBtwKBrwDbkRScfggn+JSs+DzcZK20ZbxKPKv060aekC4dxqapamlgf9PncC5/4sqhUU4SdeKE770H1s7dJhmV5QEnzLawJTgiTzD3RFcadl2H4dduro/KxVyAe5nNKE/Xg+uRalLU/Hw9Or44m2xDyWESWj8sqweaGDUnsoHWJFsyVwwIj15fx3cDX6kjObC0gYns1o79x+COWCqyIlDwE2Pf7Xum55FASKFH8lqlYpEzR38CAwEAAQ==';
 
-  bool customPurchases;
+  bool _customPurchases;
+  TextEditingController _productIdController;
 
   @override
   void initState() {
-    customPurchases = false;
+    _customPurchases = false;
+    _productIdController = new TextEditingController();
     super.initState();
   }
 
@@ -48,12 +51,13 @@ class _HomePageState extends State<HomePage> {
                   ServiceStatusWidget(snapshot),
                   Expanded(child: Container()),
                   TextField(
+                    controller: _productIdController,
                     decoration: InputDecoration(labelText: 'Product id'),
                   ),
                   GestureDetector(
                     onTap: () {
                       setState(() {
-                        customPurchases = !customPurchases;
+                        _customPurchases = !_customPurchases;
                       });
                     },
                     child: Container(
@@ -61,10 +65,10 @@ class _HomePageState extends State<HomePage> {
                       child: Row(
                         children: [
                           Switch(
-                            value: customPurchases,
+                            value: _customPurchases,
                             onChanged: (newValue) {
                               setState(() {
-                                customPurchases = newValue;
+                                _customPurchases = newValue;
                               });
                             },
                           ),
@@ -73,7 +77,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                   ),
-                  ElevatedButton(onPressed: () {}, child: Text('PURCHASE')),
+                  ElevatedButton(onPressed: _handlePurchase, child: Text('PURCHASE')),
                   ElevatedButton(onPressed: () {}, child: Text('SUBSCRIBE')),
                   ElevatedButton(onPressed: () {}, child: Text('CHECK IF USER PURCHASED THIS ITEM')),
                   ElevatedButton(onPressed: () {}, child: Text('CHECK IF USER SUBSCRIBED THIS ITEM')),
@@ -85,5 +89,34 @@ class _HomePageState extends State<HomePage> {
         },
       ),
     );
+  }
+
+  void _handlePurchase() async {
+    final productId = _productIdController.text;
+    if (productId.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Please enter the product id')));
+      return;
+    }
+    try {
+      final purchaseInfo = await Foolakey.purchase(productId);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Purchase success'),
+        action: SnackBarAction(
+          label: 'Purchase Info',
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                content: SingleChildScrollView(
+                  child: Text(purchaseInfo.toString()),
+                ),
+              ),
+            );
+          },
+        ),
+      ));
+    } on PlatformException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.code)));
+    }
   }
 }
