@@ -16,10 +16,12 @@ class Foolakey {
   /// Initializes the connection between your app and the bazaar app
   ///
   /// You must call this method before any other methods of this library.
-  /// [inAppBillingKey] is the RSA key that you can find it in your (pishkhan panel)[https://pishkhan.cafebazaar.ir].
+  /// [inAppBillingKey] is the RSA key which you can find it in your (pishkhan panel)[https://pishkhan.cafebazaar.ir].
+  /// You can also disable the local security check (only if you are using Bazaar's REST API)
+  /// by passing null as [inAppBillingKey].
   ///
   /// This function may return an error, you should handle the error and check the stacktrace to resolve it.
-  static Future<bool> init(String inAppBillingKey) async {
+  static Future<bool> init(String? inAppBillingKey) async {
     return await _channel.invokeMethod('init', {'in_app_billing_key': inAppBillingKey});
   }
 

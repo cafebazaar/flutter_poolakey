@@ -50,7 +50,7 @@ class FoolakeyPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
     override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
         when (call.method) {
             "init" -> {
-                val inAppBillingKey = call.argument<String>("in_app_billing_key")!!
+                val inAppBillingKey = call.argument<String>("in_app_billing_key")
                 startPaymentConnection(inAppBillingKey, result)
             }
             "purchase" -> {
@@ -79,10 +79,13 @@ class FoolakeyPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
         }
     }
 
-    private fun startPaymentConnection(inAppBillingKey: String, result: Result) {
-        val paymentConfiguration = PaymentConfiguration(
-            localSecurityCheck = SecurityCheck.Enable(rsaPublicKey = inAppBillingKey)
-        )
+    private fun startPaymentConnection(inAppBillingKey: String?, result: Result) {
+        val securityCheck = if (inAppBillingKey != null) {
+            SecurityCheck.Enable(rsaPublicKey = inAppBillingKey)
+        } else {
+            SecurityCheck.Disable
+        }
+        val paymentConfiguration = PaymentConfiguration(localSecurityCheck = securityCheck)
 
         payment = Payment(context = requireActivity, config = paymentConfiguration)
 
