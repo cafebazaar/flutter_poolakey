@@ -162,7 +162,7 @@ class FoolakeyPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
             activity = requireActivity,
             request = PurchaseRequest(
                 productId = productId,
-                requestCode = SUBSCRIBE_REQUEST_CODE,
+                requestCode = PURCHASE_REQUEST_CODE,
                 payload = payload
             )
         ) {
@@ -225,11 +225,11 @@ class FoolakeyPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
     }
 
     override fun onDetachedFromActivityForConfigChanges() {
-        // Todo: What can we do here?
+        // No op
     }
 
     override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
-        // Todo: What can we do here?
+        // No op
     }
 
     override fun onDetachedFromActivity() {
@@ -245,8 +245,11 @@ class FoolakeyPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
-        payment.onActivityResult(requestCode, resultCode, data, purchaseCallback!!)
-        return true
+        if (requestCode == PURCHASE_REQUEST_CODE && purchaseCallback != null) {
+            payment.onActivityResult(requestCode, resultCode, data, purchaseCallback!!)
+            return true
+        }
+        return false
     }
 
     private fun PurchaseInfo.toMap() = hashMapOf(
@@ -263,6 +266,5 @@ class FoolakeyPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
 
     companion object {
         private const val PURCHASE_REQUEST_CODE = 1000
-        private const val SUBSCRIBE_REQUEST_CODE = 1001
     }
 }
