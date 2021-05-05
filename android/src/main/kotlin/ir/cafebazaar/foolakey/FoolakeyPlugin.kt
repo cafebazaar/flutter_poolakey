@@ -67,9 +67,8 @@ class FoolakeyPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
                 val purchaseToken = call.argument<String>("purchase_token")!!
                 consume(purchaseToken, result)
             }
-            "query_purchased_product" -> {
-                val productId = call.argument<String>("product_id")!!
-                queryPurchasedProduct(productId, result)
+            "get_all_purchased_products" -> {
+                getAllPurchasedProducts(result)
             }
             "query_subscribed_product" -> {
                 val productId = call.argument<String>("product_id")!!
@@ -193,16 +192,14 @@ class FoolakeyPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
         }
     }
 
-    private fun queryPurchasedProduct(productId: String, result: Result) {
+    private fun getAllPurchasedProducts(result: Result) {
         if (paymentConnection.getState() != ConnectionState.Connected) {
             result.error("PAYMENT_CONNECTION_IS_NOT_CONNECTED", "PaymentConnection is not connected (state: ${paymentConnection.getState()})", null)
             return
         }
         payment.getPurchasedProducts {
             querySucceed { purchasedItems ->
-                purchasedItems.find { it.productId == productId }
-                    ?.also { result.success(it.toMap()) }
-                    ?: run { result.success(null) }
+                result.success(purchasedItems.map { it.toMap() })
             }
             queryFailed {
                 result.error("QUERY_PURCHASED_PRODUCT_FAILED", it.toString(), null)
