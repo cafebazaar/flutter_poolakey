@@ -16,10 +16,37 @@ class _HomePageState extends State<HomePage> {
 
   late TextEditingController _productIdController;
 
+  late bool _isLoading;
+
+  Exception? _exception;
+
   @override
   void initState() {
     _productIdController = new TextEditingController();
+    initFoolakey();
     super.initState();
+  }
+
+  void initFoolakey() async {
+    setState(() {
+      _isLoading = true;
+    });
+    try {
+      await Foolakey.init(_inAppBillingKey, onDisconnected: _onDisconnect);
+      setState(() {
+        _exception = null;
+        _isLoading = false;
+      });
+    } on Exception catch (e) {
+      setState(() {
+        _exception = e;
+        _isLoading = false;
+      });
+    }
+  }
+
+  void _onDisconnect() {
+    print('Connection to cafebazaar has just disconnected, you may need to call Foolakey.init() again');
   }
 
   @override
@@ -28,66 +55,56 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: const Text('Foolakey Sample App'),
       ),
-      body: FutureBuilder(
-        future: Foolakey.init(_inAppBillingKey),
-        builder: (context, AsyncSnapshot<bool> snapshot) {
-          bool isLoading = snapshot.data == null && snapshot.error == null;
-          if (isLoading) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-
-          return Center(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    height: 24,
-                  ),
-                  ServiceStatusWidget(snapshot),
-                  Expanded(child: Container()),
-                  TextField(
-                    controller: _productIdController,
-                    decoration: InputDecoration(labelText: 'Product id'),
-                    autofocus: false,
-                  ),
-                  SizedBox(
-                    height: 24,
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      _handlePurchase(context);
-                    },
-                    child: Text('PURCHASE'),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      _handleSubscribe(context);
-                    },
-                    child: Text('SUBSCRIBE'),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      _handleQueryPurchasedProduct(context);
-                    },
-                    child: Text('CHECK IF USER PURCHASED THIS PRODUCT'),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      _handleQuerySubscribedProduct(context);
-                    },
-                    child: Text('CHECK IF USER SUBSCRIBED THIS PRODUCT'),
-                  ),
-                  Expanded(child: Container()),
-                ],
+      body: _isLoading
+          ? Center(child: CircularProgressIndicator())
+          : Center(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      height: 24,
+                    ),
+                    ServiceStatusWidget(_exception),
+                    Expanded(child: Container()),
+                    TextField(
+                      controller: _productIdController,
+                      decoration: InputDecoration(labelText: 'Product id'),
+                      autofocus: false,
+                    ),
+                    SizedBox(
+                      height: 24,
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        _handlePurchase(context);
+                      },
+                      child: Text('PURCHASE'),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        _handleSubscribe(context);
+                      },
+                      child: Text('SUBSCRIBE'),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        _handleQueryPurchasedProduct(context);
+                      },
+                      child: Text('CHECK IF USER PURCHASED THIS PRODUCT'),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        _handleQuerySubscribedProduct(context);
+                      },
+                      child: Text('CHECK IF USER SUBSCRIBED THIS PRODUCT'),
+                    ),
+                    Expanded(child: Container()),
+                  ],
+                ),
               ),
             ),
-          );
-        },
-      ),
     );
   }
 

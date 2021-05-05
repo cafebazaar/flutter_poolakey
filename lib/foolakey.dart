@@ -19,10 +19,26 @@ class Foolakey {
   /// [inAppBillingKey] is the RSA key which you can find it in your (pishkhan panel)[https://pishkhan.cafebazaar.ir].
   /// You can also disable the local security check (only if you are using Bazaar's REST API)
   /// by passing null as [inAppBillingKey].
+  /// 
+  /// You should listen to [onDisconnected] callback and call [Foolakey.init] to reconnect again.
   ///
   /// This function may return an error, you should handle the error and check the stacktrace to resolve it.
-  static Future<bool> init(String? inAppBillingKey) async {
+  static Future<bool> init(String? inAppBillingKey, {VoidCallback? onDisconnected}) async {
+    _registerOnDisconnect(onDisconnected);
     return await _channel.invokeMethod('init', {'in_app_billing_key': inAppBillingKey});
+  }
+
+  static void _registerOnDisconnect(VoidCallback? onDisconnected) {
+    if (onDisconnected == null) {
+      return;
+    }
+    _channel.setMethodCallHandler((call) {
+      if (call.method == 'disconnected') {
+        onDisconnected.call();
+        return Future.value(true);
+      }
+      throw StateError('method ${call.method} is not supported');
+    });
   }
 
   /// Initiates the purchase flow

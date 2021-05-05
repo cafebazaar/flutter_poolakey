@@ -97,7 +97,7 @@ class FoolakeyPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
                 result.error("CONNECTION_HAS_FAILED", it.toString(), null)
             }
             disconnected {
-                // TODO: What can we do here?
+                channel.invokeMethod("disconnected", null)
             }
         }
     }

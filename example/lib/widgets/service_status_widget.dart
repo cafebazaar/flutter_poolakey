@@ -1,22 +1,28 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class ServiceStatusWidget extends StatelessWidget {
-  final AsyncSnapshot<bool> snapshot;
+  final Exception? error;
 
-  const ServiceStatusWidget(this.snapshot) : super();
+  const ServiceStatusWidget(this.error) : super();
+
+  String _errorMessage() {
+    if (error is PlatformException) {
+      return (error as PlatformException).stacktrace!;
+    }
+    return error.toString();
+  }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        if (snapshot.hasError) {
+        if (error != null) {
           showDialog(
             context: context,
             builder: (context) => AlertDialog(
               content: SingleChildScrollView(
-                child: Text((snapshot.error as PlatformException).stacktrace!),
+                child: Text(_errorMessage()),
               ),
             ),
           );
@@ -26,21 +32,21 @@ class ServiceStatusWidget extends StatelessWidget {
         TextSpan(
           children: <InlineSpan>[
             TextSpan(text: 'Service is: '),
-            snapshot.hasError
+            error != null
                 ? TextSpan(
-              text: 'Disconnected(click to see error)',
-              style: TextStyle(
-                color: Colors.red,
-                fontWeight: FontWeight.bold,
-              ),
-            )
+                    text: 'Disconnected(click to see error)',
+                    style: TextStyle(
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  )
                 : TextSpan(
-              text: 'Connected',
-              style: TextStyle(
-                color: Colors.green,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+                    text: 'Connected',
+                    style: TextStyle(
+                      color: Colors.green,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
           ],
         ),
       ),
