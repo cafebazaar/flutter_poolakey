@@ -114,13 +114,20 @@ class Foolakey {
   /// If it doesn't find any, it returns null (That's why [PurchaseInfo] is nullable).
   static Future<PurchaseInfo?> queryPurchasedProduct(String productId) async {
     try {
-      final allProducts = await getAllPurchasedProducts();
-      return allProducts.findByProductId(productId);
+      return (await getAllPurchasedProducts()).find(productId);
     } catch (e) {
       return Future.error(e);
     }
   }
 
+  /// Returns all subscribed products
+  ///
+  /// Retrieves list of [PurchaseInfo] which contains all subscribed products in user's inventory.
+  static Future<List<PurchaseInfo>> getAllSubscribedProducts() async {
+    final List list = await _channel.invokeMethod("get_all_subscribed_products");
+    return list.map((map) => PurchaseInfo.fromMap(map)).toList();
+  }
+  
   /// Queries a subscribed product in the user's inventory
   ///
   /// It queries and finds a [PurchaseInfo] (or null if it doesn't find) using provided [productId]
@@ -132,16 +139,16 @@ class Foolakey {
   /// It returns a [PurchaseInfo] if this product exists in the user's inventory.
   /// If it doesn't find any, it returns null (That's why [PurchaseInfo] is nullable).
   static Future<PurchaseInfo?> querySubscribedProduct(String productId) async {
-    final map = await _channel.invokeMethod('query_subscribed_product', {'product_id': productId});
-    if (map == null) {
-      return null;
+    try {
+      return (await getAllSubscribedProducts()).find(productId);
+    } catch (e) {
+      return Future.error(e);
     }
-    return PurchaseInfo.fromMap(map);
   }
 }
 
 extension _purchaseInfoExtension on List<PurchaseInfo> {
-  PurchaseInfo? findByProductId(String productId) {
+  PurchaseInfo? find(String productId) {
     for (final info in this) {
       if (info.productId == productId) {
         return info;
