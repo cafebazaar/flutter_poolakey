@@ -23,11 +23,11 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     _productIdController = new TextEditingController();
-    initFoolakey();
+    initFlutterPoolakey();
     super.initState();
   }
 
-  void initFoolakey() async {
+  void initFlutterPoolakey() async {
     setState(() {
       _isLoading = true;
     });
@@ -46,14 +46,14 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _onDisconnect() {
-    print('Connection to cafebazaar has just disconnected, you may need to call Foolakey.init() again');
+    print('Connection to cafebazaar has just disconnected, you may need to call FlutterPoolakey.init() again');
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Foolakey Sample App'),
+        title: const Text('Flutter Poolakey Sample App'),
       ),
       body: _isLoading
           ? Center(child: CircularProgressIndicator())
