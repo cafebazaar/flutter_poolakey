@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:foolakey/foolakey.dart';
+import 'package:flutter_poolakey/flutter_poolakey.dart';
 
 class PurchaseInfoDialog {
   static void show(

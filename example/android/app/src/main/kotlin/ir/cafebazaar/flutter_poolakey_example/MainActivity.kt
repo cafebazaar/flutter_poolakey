@@ -1,4 +1,4 @@
-package ir.cafebazaar.foolakey_example
+package ir.cafebazaar.flutter_poolakey_example
 
 import io.flutter.embedding.android.FlutterActivity
 

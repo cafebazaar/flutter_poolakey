@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:foolakey/foolakey.dart';
-import 'package:foolakey_example/widgets/purchase_info_dialog.dart';
+import 'package:flutter_poolakey/flutter_poolakey.dart';
+import 'package:flutter_poolakey_example/widgets/purchase_info_dialog.dart';
 
 import 'widgets/service_status_widget.dart';
 
@@ -32,7 +32,7 @@ class _HomePageState extends State<HomePage> {
       _isLoading = true;
     });
     try {
-      await Foolakey.init(_inAppBillingKey, onDisconnected: _onDisconnect);
+      await FlutterPoolakey.init(_inAppBillingKey, onDisconnected: _onDisconnect);
       setState(() {
         _exception = null;
         _isLoading = false;
@@ -115,7 +115,7 @@ class _HomePageState extends State<HomePage> {
       return;
     }
     try {
-      final purchaseInfo = await Foolakey.purchase(productId);
+      final purchaseInfo = await FlutterPoolakey.purchase(productId);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('Successful Purchase'),
         action: SnackBarAction(
@@ -139,7 +139,7 @@ class _HomePageState extends State<HomePage> {
 
   void _handleConsume(String purchaseToken) async {
     try {
-      await Foolakey.consume(purchaseToken);
+      await FlutterPoolakey.consume(purchaseToken);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Successful Consume')));
     } on PlatformException catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.code)));
@@ -153,7 +153,7 @@ class _HomePageState extends State<HomePage> {
       return;
     }
     try {
-      final purchaseInfo = await Foolakey.subscribe(productId);
+      final purchaseInfo = await FlutterPoolakey.subscribe(productId);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('Successful Subscription'),
         action: SnackBarAction(
@@ -175,7 +175,7 @@ class _HomePageState extends State<HomePage> {
       return;
     }
     try {
-      final purchaseInfo = await Foolakey.queryPurchasedProduct(productId);
+      final purchaseInfo = await FlutterPoolakey.queryPurchasedProduct(productId);
       if (purchaseInfo == null) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Not found!')));
         return;
@@ -201,7 +201,7 @@ class _HomePageState extends State<HomePage> {
       return;
     }
     try {
-      final purchaseInfo = await Foolakey.querySubscribedProduct(productId);
+      final purchaseInfo = await FlutterPoolakey.querySubscribedProduct(productId);
       if (purchaseInfo == null) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Not found!')));
         return;

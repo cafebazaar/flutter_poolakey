@@ -1,4 +1,4 @@
-package ir.cafebazaar.foolakey
+package ir.cafebazaar.flutter_poolakey
 
 import android.app.Activity
 import android.content.Intent
@@ -22,7 +22,7 @@ import ir.cafebazaar.poolakey.config.SecurityCheck
 import ir.cafebazaar.poolakey.entity.PurchaseInfo
 import ir.cafebazaar.poolakey.request.PurchaseRequest
 
-class FoolakeyPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRegistry.ActivityResultListener {
+class FlutterPoolakeyPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRegistry.ActivityResultListener {
     private lateinit var channel: MethodChannel
     private var activityBinding: ActivityPluginBinding? = null
 
@@ -43,7 +43,7 @@ class FoolakeyPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, PluginRe
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {
         activityBinding = binding
         activityBinding!!.addActivityResultListener(this)
-        channel = MethodChannel(binaryMessenger, "ir.cafebazaar.foolakey")
+        channel = MethodChannel(binaryMessenger, "ir.cafebazaar.flutter_poolakey")
         channel.setMethodCallHandler(this)
     }
 

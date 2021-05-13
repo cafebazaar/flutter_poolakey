@@ -1,4 +1,4 @@
-name: foolakey
+name: flutter_poolakey
 description: Cafebazaar IAB in Flutter
 version: 0.0.1
 author:
@@ -28,10 +28,10 @@ flutter:
   plugin:
     platforms:
       android:
-        package: ir.cafebazaar.foolakey
-        pluginClass: FoolakeyPlugin
+        package: ir.cafebazaar.flutter_poolakey
+        pluginClass: FlutterPoolakeyPlugin
       ios:
-        pluginClass: FoolakeyPlugin
+        pluginClass: FlutterPoolakeyPlugin
 
   # To add assets to your plugin package, add an assets section, like this:
   # assets:

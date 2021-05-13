@@ -1,4 +1,4 @@
-group 'ir.cafebazaar.foolakey'
+group 'ir.cafebazaar.flutter_poolakey'
 version '1.0-SNAPSHOT'
 
 buildscript {

@@ -7,12 +7,12 @@ import 'purchase_info.dart';
 
 export 'purchase_info.dart';
 
-/// [Foolakey] is a Flutter In-App Billing SDK for Cafe Bazaar App Store.
+/// [FlutterPoolakey] is a Flutter In-App Billing SDK for Cafe Bazaar App Store.
 ///
 /// It only works in the Android platform (Because [Cafebazaar](https://cafebazaar.ir/?l=en) only supports Android)
 /// It uses [Poolakey](https://github.com/cafebazaar/Poolakey) SDK under the hood.
-class Foolakey {
-  static const MethodChannel _channel = const MethodChannel('ir.cafebazaar.foolakey');
+class FlutterPoolakey {
+  static const MethodChannel _channel = const MethodChannel('ir.cafebazaar.flutter_poolakey');
 
   /// Initializes the connection between your app and the bazaar app
   ///
@@ -21,7 +21,7 @@ class Foolakey {
   /// You can also disable the local security check (only if you are using Bazaar's REST API)
   /// by passing null as [inAppBillingKey].
   /// 
-  /// You should listen to [onDisconnected] callback and call [Foolakey.init] to reconnect again.
+  /// You should listen to [onDisconnected] callback and call [FlutterPoolakey.init] to reconnect again.
   ///
   /// This function may return an error, you should handle the error and check the stacktrace to resolve it.
   static Future<bool> init(String? inAppBillingKey, {VoidCallback? onDisconnected}) async {

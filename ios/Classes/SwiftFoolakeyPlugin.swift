@@ -1,9 +1,9 @@
 import Flutter
 import UIKit
 
-public class SwiftFoolakeyPlugin: NSObject, FlutterPlugin {
+public class SwiftFlutterPoolakeyPlugin: NSObject, FlutterPlugin {
   public static func register(with registrar: FlutterPluginRegistrar) {
-    let channel = FlutterMethodChannel(name: "foolakey", binaryMessenger: registrar.messenger())
+    let channel = FlutterMethodChannel(name: "flutter_poolakey", binaryMessenger: registrar.messenger())
     let instance = SwiftFoolakeyPlugin()
     registrar.addMethodCallDelegate(instance, channel: channel)
   }

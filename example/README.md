@@ -1,6 +1,6 @@
-# foolakey_example
+# flutter_poolakey_example
 
-Demonstrates how to use the foolakey plugin.
+Demonstrates how to use the flutter_poolakey plugin.
 
 ## Getting Started
 

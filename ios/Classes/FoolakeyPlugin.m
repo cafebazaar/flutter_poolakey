@@ -1,4 +1,4 @@
-#import "FoolakeyPlugin.h"
+#import "FlutterPoolakeyPlugin.h"
 #if __has_include(<foolakey/foolakey-Swift.h>)
 #import <foolakey/foolakey-Swift.h>
 #else
