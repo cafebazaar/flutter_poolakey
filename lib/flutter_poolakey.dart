@@ -1,4 +1,3 @@
-
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
@@ -20,7 +19,7 @@ class FlutterPoolakey {
   /// [inAppBillingKey] is the RSA key which you can find it in your (pishkhan panel)[https://pishkhan.cafebazaar.ir].
   /// You can also disable the local security check (only if you are using Bazaar's REST API)
   /// by passing null as [inAppBillingKey].
-  /// 
+  ///
   /// You should listen to [onDisconnected] callback and call [FlutterPoolakey.init] to reconnect again.
   ///
   /// This function may return an error, you should handle the error and check the stacktrace to resolve it.
@@ -56,7 +55,8 @@ class FlutterPoolakey {
     String productId, {
     String payload = "",
   }) async {
-    final map = await _channel.invokeMethod('purchase', {'product_id': productId, 'payload': payload});
+    final map =
+        await _channel.invokeMethod('purchase', {'product_id': productId, 'payload': payload});
     return PurchaseInfo.fromMap(map);
   }
 
@@ -74,7 +74,8 @@ class FlutterPoolakey {
     String productId, {
     String payload = "",
   }) async {
-    final map = await _channel.invokeMethod('subscribe', {'product_id': productId, 'payload': payload});
+    final map =
+        await _channel.invokeMethod('subscribe', {'product_id': productId, 'payload': payload});
     return PurchaseInfo.fromMap(map);
   }
 
@@ -127,7 +128,7 @@ class FlutterPoolakey {
     final List list = await _channel.invokeMethod("get_all_subscribed_products");
     return list.map((map) => PurchaseInfo.fromMap(map)).toList();
   }
-  
+
   /// Queries a subscribed product in the user's inventory
   ///
   /// It queries and finds a [PurchaseInfo] (or null if it doesn't find) using provided [productId]

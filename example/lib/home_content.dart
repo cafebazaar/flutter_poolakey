@@ -6,7 +6,6 @@ import 'widgets/purchase_info_dialog.dart';
 import 'widgets/service_status_widget.dart';
 
 class HomeContent extends StatefulWidget {
-
   final Exception? exception;
 
   const HomeContent({Key? key, this.exception}) : super(key: key);
@@ -16,7 +15,6 @@ class HomeContent extends StatefulWidget {
 }
 
 class _HomeContentState extends State<HomeContent> {
-
   late TextEditingController _productIdController;
 
   @override
@@ -100,7 +98,8 @@ class _HomeContentState extends State<HomeContent> {
   void _handlePurchase(BuildContext context) async {
     final productId = _productIdController.text;
     if (productId.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Please enter the product id')));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Please enter the product id')));
       return;
     }
     try {
@@ -138,7 +137,8 @@ class _HomeContentState extends State<HomeContent> {
   void _handleSubscribe(BuildContext context) async {
     final productId = _productIdController.text;
     if (productId.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Please enter the product id')));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Please enter the product id')));
       return;
     }
     try {
@@ -160,7 +160,8 @@ class _HomeContentState extends State<HomeContent> {
   void _handleQueryPurchasedProduct(BuildContext context) async {
     final productId = _productIdController.text;
     if (productId.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Please enter the product id')));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Please enter the product id')));
       return;
     }
     try {
@@ -186,7 +187,8 @@ class _HomeContentState extends State<HomeContent> {
   void _handleQuerySubscribedProduct(BuildContext context) async {
     final productId = _productIdController.text;
     if (productId.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Please enter the product id')));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Please enter the product id')));
       return;
     }
     try {

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_poolakey/flutter_poolakey.dart';
 import 'package:flutter_poolakey_example/home_content.dart';
 
-
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
@@ -41,15 +40,17 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _onDisconnect() {
-    print('Connection to cafebazaar has just disconnected, you may need to call FlutterPoolakey.init() again');
+    print(
+        'Connection to cafebazaar has just disconnected, you may need to call FlutterPoolakey.init() again');
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Flutter Poolakey Sample App')),
-      body: _isLoading ? Center(child: CircularProgressIndicator()) : HomeContent(exception: _exception),
+      body: _isLoading
+          ? Center(child: CircularProgressIndicator())
+          : HomeContent(exception: _exception),
     );
   }
-
 }
