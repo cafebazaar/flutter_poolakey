@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_poolakey/flutter_poolakey.dart';
@@ -72,6 +73,26 @@ class _HomePageState extends State<HomePage> {
                       controller: _productIdController,
                       decoration: InputDecoration(labelText: 'Product id'),
                       autofocus: false,
+                    ),
+                    SizedBox(
+                      height: 8,
+                    ),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: RichText(
+                        text: TextSpan(
+                          text: 'You can use ',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 14,
+                          ),
+                          children: <TextSpan>[
+                            _ProductTextSpan('developerTest', onProductClick),
+                            TextSpan(text: ' and '),
+                            _ProductTextSpan('developerTestSub', onProductClick),
+                          ],
+                        ),
+                      ),
                     ),
                     SizedBox(
                       height: 24,
@@ -217,4 +238,19 @@ class _HomePageState extends State<HomePage> {
     _productIdController.dispose();
     super.dispose();
   }
+
+  void onProductClick(String productId) {
+    _productIdController.text = productId;
+  }
+}
+
+class _ProductTextSpan extends TextSpan {
+  _ProductTextSpan(String productId, Function(String) onProductClick)
+      : super(
+            text: productId,
+            style: TextStyle(
+              color: Colors.cyan,
+              fontWeight: FontWeight.bold,
+            ),
+            recognizer: TapGestureRecognizer()..onTap = () => onProductClick(productId));
 }
