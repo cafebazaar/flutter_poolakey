@@ -1,3 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
   package="ir.cafebazaar.flutter_poolakey">
+    <queries>
+        <package android:name="com.farsitel.bazaar" />
+    </queries>
 </manifest>
