@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'purchase_info.dart';
+import 'sku_details.dart';
 
 export 'purchase_info.dart';
 
@@ -146,6 +147,17 @@ class FlutterPoolakey {
       return Future.error(e);
     }
   }
+
+
+  /// Returns sku details of your purchasable products
+  ///
+  /// You can use this function to get detail of inApp product sku's,
+  /// [skuIds] Contain all sku id's that you want to get info about it.
+  static Future<List<SkuDetails>> getInAppSkuDetails(List<String> skuIds) async {
+    final List list = await _channel.invokeMethod("get_in_app_sku_details", {'sku_ids': skuIds});
+    return list.map((map) => SkuDetails.fromMap(map)).toList();
+  }
+
 }
 
 extension _purchaseInfoExtension on List<PurchaseInfo> {
