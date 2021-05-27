@@ -6,6 +6,7 @@ import 'purchase_info.dart';
 import 'sku_details.dart';
 
 export 'purchase_info.dart';
+export 'sku_details.dart';
 
 /// [FlutterPoolakey] is a Flutter In-App Billing SDK for Cafe Bazaar App Store.
 ///
