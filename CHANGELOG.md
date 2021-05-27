@@ -1,4 +1,4 @@
-## 1.0.0-beta1
+## 1.0.0-rc1
 * Write documentations in github WIKI and linked in README.md
 * reformat code
 * ready to go
