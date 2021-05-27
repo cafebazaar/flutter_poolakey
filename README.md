@@ -1,4 +1,4 @@
-<img src="https://github.com/cafebazaar/flutter_poolakey/raw/master/repo_files/flutter_poolakey.jpg"/><br/>
+<img src="https://github.com/cafebazaar/flutter_poolakey/raw/master/repo_files/flutter_poolakey.jpg"/>
 
 [![pub package](https://img.shields.io/pub/v/flutter_poolakey.svg)](https://pub.dartlang.org/packages/flutter_poolakey)
 [![APK](https://img.shields.io/badge/APK-Demo-brightgreen.svg)](https://github.com/cafebazaar/flutter_poolakey/raw/master/repo_files/flutter_poolakey_example-1.0.0-rc1.apk)
