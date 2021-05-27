@@ -1,15 +1,9 @@
-# flutter_poolakey
+A wrapper around [Poolakey](https://github.com/cafebazaar/Poolakey) to use in Flutter.
 
-Cafebazaar IAB in Flutter
+[Poolakey](https://github.com/cafebazaar/Poolakey) is an Android In-App Billing SDK for [Cafe Bazaar](https://cafebazaar.ir/?l=en) App Store.
 
-## Getting Started
+<img src="https://github.com/cafebazaar/flutter_poolakey/raw/master/repo_files/Poolakey.jpg"/><br/>
 
-This project is a starting point for a Flutter
-[plug-in package](https://flutter.dev/developing-packages/),
-a specialized package that includes platform-specific implementation code for
-Android and/or iOS.
+[![pub package](https://img.shields.io/pub/v/flutter_poolakey.svg)](https://pub.dartlang.org/packages/flutter_poolakey)
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-
+# Start reading the docs in our [WIKI](https://github.com/cafebazaar/flutter_poolakey/wiki)
