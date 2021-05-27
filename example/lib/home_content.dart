@@ -95,6 +95,12 @@ class _HomeContentState extends State<HomeContent> {
               },
               child: Text('GET SKU DETAILS OF IN-APP ITEM'),
             ),
+            ElevatedButton(
+              onPressed: () {
+                _handleGetSubscriptionSkuDetails(context);
+              },
+              child: Text('GET SKU DETAILS OF SUBSCRIPTION ITEM'),
+            ),
             Expanded(child: Container()),
           ],
         ),
@@ -219,6 +225,25 @@ class _HomeContentState extends State<HomeContent> {
     }
     try {
       final skuDetails = await FlutterPoolakey.getInAppSkuDetails([productId]);
+      if (skuDetails.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Not found!')));
+        return;
+      }
+      SkuDetailsDialog.show(context, skuDetails.first);
+    } on PlatformException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.code)));
+    }
+  }
+
+  void _handleGetSubscriptionSkuDetails(BuildContext context) async {
+    final productId = _productIdController.text;
+    if (productId.trim().isEmpty) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Please enter the prod uct id')));
+      return;
+    }
+    try {
+      final skuDetails = await FlutterPoolakey.getSubscriptionSkuDetails([productId]);
       if (skuDetails.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Not found!')));
         return;

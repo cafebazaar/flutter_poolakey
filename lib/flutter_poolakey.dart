@@ -148,13 +148,21 @@ class FlutterPoolakey {
     }
   }
 
-
   /// Returns sku details of your purchasable products
   ///
   /// You can use this function to get detail of inApp product sku's,
   /// [skuIds] Contain all sku id's that you want to get info about it.
   static Future<List<SkuDetails>> getInAppSkuDetails(List<String> skuIds) async {
     final List list = await _channel.invokeMethod("get_in_app_sku_details", {'sku_ids': skuIds});
+    return list.map((map) => SkuDetails.fromMap(map)).toList();
+  }
+
+  /// Returns sku details of your subscribable products
+  ///
+  /// You can use this function to get detail of subscription product sku's,
+  /// [skuIds] Contain all sku id's that you want to get info about it.
+  static Future<List<SkuDetails>> getSubscriptionSkuDetails(List<String> skuIds) async {
+    final List list = await _channel.invokeMethod("get_subscription_sku_details", {'sku_ids': skuIds});
     return list.map((map) => SkuDetails.fromMap(map)).toList();
   }
 

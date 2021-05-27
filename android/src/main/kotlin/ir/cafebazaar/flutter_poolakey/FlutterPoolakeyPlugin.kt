@@ -77,6 +77,10 @@ class FlutterPoolakeyPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, P
                 val skuIds = call.argument<List<String>>("sku_ids")!!
                 getInAppSkuDetails(skuIds, result)
             }
+            "get_subscription_sku_details" -> {
+                val skuIds = call.argument<List<String>>("sku_ids")!!
+                getSubscriptionSkuDetails(skuIds, result)
+            }
             else -> result.notImplemented()
         }
     }
@@ -237,6 +241,22 @@ class FlutterPoolakeyPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, P
             }
             getSkuDetailsFailed {
                 result.error("QUERY_GET_IN_APP_SKU_DETAILS_FAILED", it.toString(), null)
+            }
+        }
+    }
+
+    private fun getSubscriptionSkuDetails(skuIds: List<String>, result: Result) {
+        if (paymentConnection.getState() != ConnectionState.Connected) {
+            result.error("PAYMENT_CONNECTION_IS_NOT_CONNECTED", "PaymentConnection is not connected (state: ${paymentConnection.getState()})", null)
+            return
+        }
+
+        payment.getSubscriptionSkuDetails(skuIds = skuIds) {
+            getSkuDetailsSucceed {
+                result.success(it.map { skuDetails -> skuDetails.toMap() })
+            }
+            getSkuDetailsFailed {
+                result.error("QUERY_GET_SUBSCRIPTION_SKU_DETAILS_FAILED", it.toString(), null)
             }
         }
     }
