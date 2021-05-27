@@ -26,7 +26,8 @@ class _HomePageState extends State<HomePage> {
       _isLoading = true;
     });
     try {
-      await FlutterPoolakey.init(_inAppBillingKey, onDisconnected: _onDisconnect);
+      await FlutterPoolakey.init(_inAppBillingKey,
+          onDisconnected: _onDisconnect);
       setState(() {
         _exception = null;
         _isLoading = false;

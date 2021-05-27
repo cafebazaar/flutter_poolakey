@@ -9,5 +9,6 @@ class ProductTextSpan extends TextSpan {
               color: Colors.cyan,
               fontWeight: FontWeight.bold,
             ),
-            recognizer: TapGestureRecognizer()..onTap = () => onProductClick(productId));
+            recognizer: TapGestureRecognizer()
+              ..onTap = () => onProductClick(productId));
 }

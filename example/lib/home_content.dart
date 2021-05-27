@@ -134,16 +134,19 @@ class _HomeContentState extends State<HomeContent> {
         ),
       ));
     } on PlatformException catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.code)));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(e.code)));
     }
   }
 
   void _handleConsume(String purchaseToken) async {
     try {
       await FlutterPoolakey.consume(purchaseToken);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Successful Consume')));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Successful Consume')));
     } on PlatformException catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.code)));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(e.code)));
     }
   }
 
@@ -166,7 +169,8 @@ class _HomeContentState extends State<HomeContent> {
         ),
       ));
     } on PlatformException catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.code)));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(e.code)));
     }
   }
 
@@ -178,9 +182,11 @@ class _HomeContentState extends State<HomeContent> {
       return;
     }
     try {
-      final purchaseInfo = await FlutterPoolakey.queryPurchasedProduct(productId);
+      final purchaseInfo =
+          await FlutterPoolakey.queryPurchasedProduct(productId);
       if (purchaseInfo == null) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Not found!')));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Not found!')));
         return;
       }
 
@@ -193,7 +199,8 @@ class _HomeContentState extends State<HomeContent> {
         },
       );
     } on PlatformException catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.code)));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(e.code)));
     }
   }
 
@@ -205,14 +212,17 @@ class _HomeContentState extends State<HomeContent> {
       return;
     }
     try {
-      final purchaseInfo = await FlutterPoolakey.querySubscribedProduct(productId);
+      final purchaseInfo =
+          await FlutterPoolakey.querySubscribedProduct(productId);
       if (purchaseInfo == null) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Not found!')));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Not found!')));
         return;
       }
       PurchaseInfoDialog.show(context, purchaseInfo);
     } on PlatformException catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.code)));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(e.code)));
     }
   }
 
@@ -226,12 +236,14 @@ class _HomeContentState extends State<HomeContent> {
     try {
       final skuDetails = await FlutterPoolakey.getInAppSkuDetails([productId]);
       if (skuDetails.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Not found!')));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Not found!')));
         return;
       }
       SkuDetailsDialog.show(context, skuDetails.first);
     } on PlatformException catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.code)));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(e.code)));
     }
   }
 
@@ -243,14 +255,17 @@ class _HomeContentState extends State<HomeContent> {
       return;
     }
     try {
-      final skuDetails = await FlutterPoolakey.getSubscriptionSkuDetails([productId]);
+      final skuDetails =
+          await FlutterPoolakey.getSubscriptionSkuDetails([productId]);
       if (skuDetails.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Not found!')));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Not found!')));
         return;
       }
       SkuDetailsDialog.show(context, skuDetails.first);
     } on PlatformException catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.code)));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(e.code)));
     }
   }
 

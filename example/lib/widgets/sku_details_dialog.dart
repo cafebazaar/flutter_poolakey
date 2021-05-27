@@ -11,15 +11,24 @@ class SkuDetailsDialog {
           text: TextSpan(
             style: DefaultTextStyle.of(context).style,
             children: <TextSpan>[
-              TextSpan(text: 'sku: ', style: TextStyle(fontWeight: FontWeight.bold)),
+              TextSpan(
+                  text: 'sku: ', style: TextStyle(fontWeight: FontWeight.bold)),
               TextSpan(text: ' ${skuDetails.sku}\n'),
-              TextSpan(text: 'type: ', style: TextStyle(fontWeight: FontWeight.bold)),
+              TextSpan(
+                  text: 'type: ',
+                  style: TextStyle(fontWeight: FontWeight.bold)),
               TextSpan(text: ' ${skuDetails.type}\n'),
-              TextSpan(text: 'price: ', style: TextStyle(fontWeight: FontWeight.bold)),
+              TextSpan(
+                  text: 'price: ',
+                  style: TextStyle(fontWeight: FontWeight.bold)),
               TextSpan(text: ' ${skuDetails.price}\n'),
-              TextSpan(text: 'title: ', style: TextStyle(fontWeight: FontWeight.bold)),
+              TextSpan(
+                  text: 'title: ',
+                  style: TextStyle(fontWeight: FontWeight.bold)),
               TextSpan(text: ' ${skuDetails.title}\n'),
-              TextSpan(text: 'description: ', style: TextStyle(fontWeight: FontWeight.bold)),
+              TextSpan(
+                  text: 'description: ',
+                  style: TextStyle(fontWeight: FontWeight.bold)),
               TextSpan(text: ' ${skuDetails.description}\n'),
             ],
           ),

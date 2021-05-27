@@ -9,8 +9,16 @@ class PurchaseInfo {
   final String originalJson;
   final String dataSignature;
 
-  PurchaseInfo(this.orderId, this.purchaseToken, this.payload, this.packageName, this.purchaseState,
-      this.purchaseTime, this.productId, this.originalJson, this.dataSignature);
+  PurchaseInfo(
+      this.orderId,
+      this.purchaseToken,
+      this.payload,
+      this.packageName,
+      this.purchaseState,
+      this.purchaseTime,
+      this.productId,
+      this.originalJson,
+      this.dataSignature);
 
   factory PurchaseInfo.fromMap(Map<dynamic, dynamic> typeName) {
     return PurchaseInfo(

@@ -13,7 +13,8 @@ export 'sku_details.dart';
 /// It only works in the Android platform (Because [Cafebazaar](https://cafebazaar.ir/?l=en) only supports Android)
 /// It uses [Poolakey](https://github.com/cafebazaar/Poolakey) SDK under the hood.
 class FlutterPoolakey {
-  static const MethodChannel _channel = const MethodChannel('ir.cafebazaar.flutter_poolakey');
+  static const MethodChannel _channel =
+      const MethodChannel('ir.cafebazaar.flutter_poolakey');
 
   /// Initializes the connection between your app and the bazaar app
   ///
@@ -25,9 +26,11 @@ class FlutterPoolakey {
   /// You should listen to [onDisconnected] callback and call [FlutterPoolakey.init] to reconnect again.
   ///
   /// This function may return an error, you should handle the error and check the stacktrace to resolve it.
-  static Future<bool> init(String? inAppBillingKey, {VoidCallback? onDisconnected}) async {
+  static Future<bool> init(String? inAppBillingKey,
+      {VoidCallback? onDisconnected}) async {
     _registerOnDisconnect(onDisconnected);
-    return await _channel.invokeMethod('init', {'in_app_billing_key': inAppBillingKey});
+    return await _channel
+        .invokeMethod('init', {'in_app_billing_key': inAppBillingKey});
   }
 
   static void _registerOnDisconnect(VoidCallback? onDisconnected) {
@@ -57,8 +60,8 @@ class FlutterPoolakey {
     String productId, {
     String payload = "",
   }) async {
-    final map =
-        await _channel.invokeMethod('purchase', {'product_id': productId, 'payload': payload});
+    final map = await _channel.invokeMethod(
+        'purchase', {'product_id': productId, 'payload': payload});
     return PurchaseInfo.fromMap(map);
   }
 
@@ -76,8 +79,8 @@ class FlutterPoolakey {
     String productId, {
     String payload = "",
   }) async {
-    final map =
-        await _channel.invokeMethod('subscribe', {'product_id': productId, 'payload': payload});
+    final map = await _channel.invokeMethod(
+        'subscribe', {'product_id': productId, 'payload': payload});
     return PurchaseInfo.fromMap(map);
   }
 
@@ -94,7 +97,8 @@ class FlutterPoolakey {
   ///
   /// It returns true if the process is successful
   static Future<bool> consume(String purchaseToken) async {
-    return await _channel.invokeMethod('consume', {'purchase_token': purchaseToken});
+    return await _channel
+        .invokeMethod('consume', {'purchase_token': purchaseToken});
   }
 
   /// Returns all purchases list
@@ -127,7 +131,8 @@ class FlutterPoolakey {
   ///
   /// Retrieves list of [PurchaseInfo] which contains all subscribed products in user's inventory.
   static Future<List<PurchaseInfo>> getAllSubscribedProducts() async {
-    final List list = await _channel.invokeMethod("get_all_subscribed_products");
+    final List list =
+        await _channel.invokeMethod("get_all_subscribed_products");
     return list.map((map) => PurchaseInfo.fromMap(map)).toList();
   }
 
@@ -153,8 +158,10 @@ class FlutterPoolakey {
   ///
   /// You can use this function to get detail of inApp product sku's,
   /// [skuIds] Contain all sku id's that you want to get info about it.
-  static Future<List<SkuDetails>> getInAppSkuDetails(List<String> skuIds) async {
-    final List list = await _channel.invokeMethod("get_in_app_sku_details", {'sku_ids': skuIds});
+  static Future<List<SkuDetails>> getInAppSkuDetails(
+      List<String> skuIds) async {
+    final List list = await _channel
+        .invokeMethod("get_in_app_sku_details", {'sku_ids': skuIds});
     return list.map((map) => SkuDetails.fromMap(map)).toList();
   }
 
@@ -162,11 +169,12 @@ class FlutterPoolakey {
   ///
   /// You can use this function to get detail of subscription product sku's,
   /// [skuIds] Contain all sku id's that you want to get info about it.
-  static Future<List<SkuDetails>> getSubscriptionSkuDetails(List<String> skuIds) async {
-    final List list = await _channel.invokeMethod("get_subscription_sku_details", {'sku_ids': skuIds});
+  static Future<List<SkuDetails>> getSubscriptionSkuDetails(
+      List<String> skuIds) async {
+    final List list = await _channel
+        .invokeMethod("get_subscription_sku_details", {'sku_ids': skuIds});
     return list.map((map) => SkuDetails.fromMap(map)).toList();
   }
-
 }
 
 extension _purchaseInfoExtension on List<PurchaseInfo> {
