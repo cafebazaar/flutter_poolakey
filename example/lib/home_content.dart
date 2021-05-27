@@ -220,7 +220,7 @@ class _HomeContentState extends State<HomeContent> {
     final productId = _productIdController.text;
     if (productId.trim().isEmpty) {
       ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Please enter the prod uct id')));
+          .showSnackBar(SnackBar(content: Text('Please enter the product id')));
       return;
     }
     try {
@@ -239,7 +239,7 @@ class _HomeContentState extends State<HomeContent> {
     final productId = _productIdController.text;
     if (productId.trim().isEmpty) {
       ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Please enter the prod uct id')));
+          .showSnackBar(SnackBar(content: Text('Please enter the product id')));
       return;
     }
     try {
