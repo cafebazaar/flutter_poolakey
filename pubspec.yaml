@@ -1,5 +1,5 @@
 name: flutter_poolakey
-description: Cafebazaar IAB in Flutter
+description: flutter_poolakey is a wrapper around the Poolakey to use in Flutter (Poolakey is an Android In-App Billing SDK for Cafe Bazaar App Store)
 version: 0.1.0
 homepage: https://github.com/cafebazaar/flutter_poolakey
 
