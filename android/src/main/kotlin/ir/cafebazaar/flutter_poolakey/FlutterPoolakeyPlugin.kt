@@ -249,18 +249,6 @@ class FlutterPoolakeyPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, P
         return false
     }
 
-    private fun PurchaseInfo.toMap() = hashMapOf(
-        "orderId" to orderId,
-        "purchaseToken" to purchaseToken,
-        "payload" to payload,
-        "packageName" to packageName,
-        "purchaseState" to purchaseState.toString(),
-        "purchaseTime" to purchaseTime,
-        "productId" to productId,
-        "originalJson" to originalJson,
-        "dataSignature" to dataSignature
-    )
-
     companion object {
         private const val PURCHASE_REQUEST_CODE = 1000
     }
