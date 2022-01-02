@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="ir.cafebazaar.flutter_poolakey_example">
+    package="com.sample.android.trivialdrivesample">
    <application
         android:label="Flutter Poolakey"
         android:icon="@mipmap/ic_launcher">
