@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+
 import 'purchase_info.dart';
 import 'sku_details.dart';
 
@@ -15,6 +16,10 @@ export 'sku_details.dart';
 class FlutterPoolakey {
   static const MethodChannel _channel =
       const MethodChannel('ir.cafebazaar.flutter_poolakey');
+
+  static Future<String> getVersion() async {
+    return await _channel.invokeMethod('version', {});
+  }
 
   /// Initializes the connection between your app and the bazaar app
   ///

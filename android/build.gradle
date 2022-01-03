@@ -35,9 +35,18 @@ android {
     defaultConfig {
         minSdkVersion 16
     }
+
+    buildTypes {
+        debug {
+            buildConfigField "String", "POOLAKEY_VERSION", '"' + poolakey_version + '"'
+        }
+        release {
+            buildConfigField "String", "POOLAKEY_VERSION", '"' + poolakey_version + '"'
+        }
+    }
 }
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation "com.github.cafebazaar.Poolakey:poolakey:1.1.0-beta02"
+    implementation "com.github.cafebazaar.Poolakey:poolakey:$poolakey_version"
 }

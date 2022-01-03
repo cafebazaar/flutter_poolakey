@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_poolakey/flutter_poolakey.dart';
 import 'package:flutter_poolakey_example/widgets/sku_details_dialog.dart';
+
 import 'widgets/product_text_span.dart';
 import 'widgets/purchase_info_dialog.dart';
 import 'widgets/service_status_widget.dart';
@@ -21,6 +22,7 @@ class _HomeContentState extends State<HomeContent> {
   @override
   void initState() {
     _productIdController = new TextEditingController();
+    _getVersion();
     super.initState();
   }
 
@@ -106,6 +108,11 @@ class _HomeContentState extends State<HomeContent> {
         ),
       ),
     );
+  }
+
+  Future<void> _getVersion() async {
+    var version = await FlutterPoolakey.getVersion();
+    print("Poolakey version: $version");
   }
 
   void _handlePurchase(BuildContext context) async {
