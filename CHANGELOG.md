@@ -1,3 +1,13 @@
+## 1.3.0
+* Add (trivial) example project.
+* Upgrade Poolakey dependency to 1.2.3
+* Fix exception on destroy flutter activity
+* Support android 12
+
+## 1.2.3
+* Upgrade Poolakey dependency to 1.2.3
+* Fix exception on destroy main-activity
+
 ## 1.0.0-rc1
 * Write documentations in github WIKI and linked in README.md
 * reformat code
