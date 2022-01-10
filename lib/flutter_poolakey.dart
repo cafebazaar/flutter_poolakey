@@ -28,14 +28,14 @@ class FlutterPoolakey {
   /// You can also disable the local security check (only if you are using Bazaar's REST API)
   /// by passing null as [inAppBillingKey].
   ///
-  /// You should listen to [onDisconnected] callback and call [FlutterPoolakey.init] to reconnect again.
+  /// You should listen to [onDisconnected] callback and call [FlutterPoolakey.connect] to reconnect again.
   ///
   /// This function may return an error, you should handle the error and check the stacktrace to resolve it.
-  static Future<bool> init(String? inAppBillingKey,
+  static Future<bool> connect(String? inAppBillingKey,
       {VoidCallback? onDisconnected}) async {
     _registerOnDisconnect(onDisconnected);
     return await _channel
-        .invokeMethod('init', {'in_app_billing_key': inAppBillingKey});
+        .invokeMethod('connect', {'in_app_billing_key': inAppBillingKey});
   }
 
   static void _registerOnDisconnect(VoidCallback? onDisconnected) {
