@@ -1,7 +1,6 @@
 package ir.cafebazaar.flutter_poolakey
 
 import android.app.Activity
-import android.content.Intent
 import androidx.annotation.NonNull
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin
@@ -12,18 +11,14 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
-import io.flutter.plugin.common.PluginRegistry
 import ir.cafebazaar.poolakey.Connection
 import ir.cafebazaar.poolakey.ConnectionState
 import ir.cafebazaar.poolakey.Payment
 import ir.cafebazaar.poolakey.callback.PurchaseCallback
 import ir.cafebazaar.poolakey.config.PaymentConfiguration
 import ir.cafebazaar.poolakey.config.SecurityCheck
-import ir.cafebazaar.poolakey.entity.PurchaseInfo
-import ir.cafebazaar.poolakey.request.PurchaseRequest
 
-class FlutterPoolakeyPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
-    PluginRegistry.ActivityResultListener {
+class FlutterPoolakeyPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
     private lateinit var channel: MethodChannel
     private var activityBinding: ActivityPluginBinding? = null
 
@@ -43,7 +38,6 @@ class FlutterPoolakeyPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
 
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {
         activityBinding = binding
-        activityBinding!!.addActivityResultListener(this)
         channel = MethodChannel(binaryMessenger, "ir.cafebazaar.flutter_poolakey")
         channel.setMethodCallHandler(this)
     }
@@ -58,14 +52,24 @@ class FlutterPoolakeyPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
                 connect(inAppBillingKey, result)
             }
             "purchase" -> {
-                val productId = call.argument<String>("product_id")!!
-                val payload = call.argument<String>("payload")!!
-                purchase(productId, payload, result)
+                startActivity(
+                    activity = requireActivity,
+                    command = PaymentActivity.Command.Purchase,
+                    productId = call.argument<String>("product_id")!!,
+                    result = result,
+                    payload = call.argument<String>("payload"),
+                    dynamicPriceToken = call.argument<String>("dynamicPriceToken"),
+                )
             }
             "subscribe" -> {
-                val productId = call.argument<String>("product_id")!!
-                val payload = call.argument<String>("payload")!!
-                subscribe(productId, payload, result)
+                startActivity(
+                    activity = requireActivity,
+                    command = PaymentActivity.Command.Subscribe,
+                    productId = call.argument<String>("product_id")!!,
+                    result = result,
+                    payload = call.argument<String>("payload"),
+                    dynamicPriceToken = call.argument<String>("dynamicPriceToken"),
+                )
             }
             "consume" -> {
                 val purchaseToken = call.argument<String>("purchase_token")!!
@@ -116,88 +120,30 @@ class FlutterPoolakeyPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
         }
     }
 
-    private fun purchase(productId: String, payload: String, result: Result) {
+    fun startActivity(
+        activity: Activity,
+        command: PaymentActivity.Command,
+        productId: String,
+        result: Result,
+        payload: String
+        ?,
+        dynamicPriceToken: String
+        ?
+    ) {
         if (paymentConnection.getState() != ConnectionState.Connected) {
-            result.error(
-                "PAYMENT_CONNECTION_IS_NOT_CONNECTED",
-                "PaymentConnection is not connected (state: ${paymentConnection.getState()})",
-                null
-            )
+            result.error("PURCHASE_FAILED", "In order to purchasing, connect to Poolakey!", null)
             return
         }
 
-        purchaseCallback = {
-            purchaseSucceed {
-                result.success(it.toMap())
-                purchaseCallback = null
-            }
-            purchaseCanceled {
-                result.error("PURCHASE_CANCELLED", "Purchase flow has been canceled", null)
-                purchaseCallback = null
-            }
-            purchaseFailed {
-                result.error("PURCHASE_FAILED", "Purchase flow has been failed", null)
-                purchaseCallback = null
-            }
-        }
-
-        payment.purchaseProduct(
-            activity = requireActivity,
-            request = PurchaseRequest(
-                productId = productId,
-                requestCode = PURCHASE_REQUEST_CODE,
-                payload = payload
-            )
-        ) {
-            purchaseFlowBegan {
-                // Nothing
-            }
-            failedToBeginFlow {
-                result.error("FAILED_TO_BEGIN_FLOW", it.toString(), null)
-            }
-        }
-    }
-
-    private fun subscribe(productId: String, payload: String, result: Result) {
-        if (paymentConnection.getState() != ConnectionState.Connected) {
-            result.error(
-                "PAYMENT_CONNECTION_IS_NOT_CONNECTED",
-                "PaymentConnection is not connected (state: ${paymentConnection.getState()})",
-                null
-            )
-            return
-        }
-
-        purchaseCallback = {
-            purchaseSucceed {
-                result.success(it.toMap())
-                purchaseCallback = null
-            }
-            purchaseCanceled {
-                result.error("SUBSCRIBE_CANCELLED", "Subscription flow has been canceled", null)
-                purchaseCallback = null
-            }
-            purchaseFailed {
-                result.error("SUBSCRIBE_FAILED", "Subscription flow has been failed", null)
-                purchaseCallback = null
-            }
-        }
-
-        payment.subscribeProduct(
-            activity = requireActivity,
-            request = PurchaseRequest(
-                productId = productId,
-                requestCode = PURCHASE_REQUEST_CODE,
-                payload = payload
-            )
-        ) {
-            purchaseFlowBegan {
-                // Nothing
-            }
-            failedToBeginFlow {
-                result.error("FAILED_TO_BEGIN_FLOW", it.toString(), null)
-            }
-        }
+        PaymentActivity.start(
+            activity,
+            command,
+            productId,
+            payment,
+            result,
+            payload,
+            dynamicPriceToken
+        )
     }
 
     private fun consume(purchaseToken: String, result: Result) {
@@ -306,7 +252,6 @@ class FlutterPoolakeyPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
     }
 
     override fun onDetachedFromActivity() {
-        activityBinding!!.removeActivityResultListener(this)
         activityBinding = null
         purchaseCallback = null
         channel.setMethodCallHandler(null)
@@ -315,17 +260,5 @@ class FlutterPoolakeyPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
 
     override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
         binaryMessenger = null
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
-        if (requestCode == PURCHASE_REQUEST_CODE && purchaseCallback != null) {
-            payment.onActivityResult(requestCode, resultCode, data, purchaseCallback!!)
-            return true
-        }
-        return false
-    }
-
-    companion object {
-        private const val PURCHASE_REQUEST_CODE = 1000
     }
 }

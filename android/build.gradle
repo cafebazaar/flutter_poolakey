@@ -3,7 +3,7 @@ version '1.0-SNAPSHOT'
 
 buildscript {
     ext.kotlin_version = '1.4.20'
-    ext.poolakey_version = '1.3.0'
+    ext.poolakey_version = '2.0.0'
     repositories {
         google()
         jcenter()
