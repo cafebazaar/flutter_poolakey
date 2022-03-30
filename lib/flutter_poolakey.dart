@@ -56,6 +56,8 @@ class FlutterPoolakey {
   /// [productId] is your product's identifier (also known as SKU).
   /// [payload] is an optional parameter that you can send, bazaar saves it in the [PurchaseInfo].
   /// You can access it through your back-end API.
+  /// [dynamicPriceToken] This is a token that the developer can apply to any user to change the price of the product.
+  /// for more info about this please read the site documentation.
   ///
   /// If any error happened (like when user cancels the flow) it throws a [PlatformException] with a stacktrace.
   /// You must handle the error with your logic.
@@ -64,9 +66,13 @@ class FlutterPoolakey {
   static Future<PurchaseInfo> purchase(
     String productId, {
     String payload = "",
+    String dynamicPriceToken = "",
   }) async {
-    final map = await _channel.invokeMethod(
-        'purchase', {'product_id': productId, 'payload': payload});
+    final map = await _channel.invokeMethod('purchase', {
+      'product_id': productId,
+      'payload': payload,
+      'dynamicPriceToken': dynamicPriceToken
+    });
     return PurchaseInfo.fromMap(map);
   }
 
@@ -75,6 +81,8 @@ class FlutterPoolakey {
   /// [productId] is your product's identifier (also known as SKU).
   /// [payload] is an optional parameter that you can send, bazaar saves it in the [PurchaseInfo].
   /// You can access it through your back-end API.
+  /// [dynamicPriceToken] This is a token that the developer can apply to any user to change the price of the product.
+  /// for more info about this please read the site documentation.
   ///
   /// If any error happened (like when user cancels the flow) it throws a [PlatformException] with a stacktrace.
   /// You must handle the error with your logic.
@@ -83,9 +91,13 @@ class FlutterPoolakey {
   static Future<PurchaseInfo> subscribe(
     String productId, {
     String payload = "",
+    String dynamicPriceToken = "",
   }) async {
-    final map = await _channel.invokeMethod(
-        'subscribe', {'product_id': productId, 'payload': payload});
+    final map = await _channel.invokeMethod('subscribe', {
+      'product_id': productId,
+      'payload': payload,
+      'dynamicPriceToken': dynamicPriceToken
+    });
     return PurchaseInfo.fromMap(map);
   }
 
