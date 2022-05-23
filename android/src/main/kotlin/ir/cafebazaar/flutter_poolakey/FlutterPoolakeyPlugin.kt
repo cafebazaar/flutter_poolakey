@@ -6,7 +6,6 @@ import androidx.annotation.NonNull
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
-import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -21,11 +20,10 @@ import ir.cafebazaar.poolakey.config.SecurityCheck
 class FlutterPoolakeyPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
     private lateinit var channel: MethodChannel
     private var activityBinding: ActivityPluginBinding? = null
+    private lateinit var flutterPluginBinding: FlutterPlugin.FlutterPluginBinding
 
     private val requireActivity: Activity
         get() = activityBinding!!.activity
-
-    private var binaryMessenger: BinaryMessenger? = null
 
     private var purchaseCallback: (PurchaseCallback.() -> Unit)? = null
 
@@ -33,12 +31,13 @@ class FlutterPoolakeyPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
     private lateinit var payment: Payment
 
     override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-        binaryMessenger = flutterPluginBinding.binaryMessenger
+        this.flutterPluginBinding = flutterPluginBinding
     }
 
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {
         activityBinding = binding
-        channel = MethodChannel(binaryMessenger, "ir.cafebazaar.flutter_poolakey")
+        channel =
+            MethodChannel(flutterPluginBinding.binaryMessenger, "ir.cafebazaar.flutter_poolakey")
         channel.setMethodCallHandler(this)
     }
 
@@ -259,6 +258,5 @@ class FlutterPoolakeyPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
     }
 
     override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
-        binaryMessenger = null
     }
 }
