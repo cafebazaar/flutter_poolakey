@@ -9,3 +9,16 @@ class ProductItem {
 
   ProductItem(this.id, this.icon, this.consumable);
 }
+
+class TrialSubscription extends SkuDetails {
+  bool isAvailable = false;
+  int trialPeriodDays = 0;
+  TrialSubscription(
+      String sku, String type, String price, String title, String description)
+      : super(sku, type, price, title, description);
+
+  static TrialSubscription fromSkuDetails(SkuDetails skuDetails) {
+    return TrialSubscription(skuDetails.sku, skuDetails.type, skuDetails.price,
+        skuDetails.title, skuDetails.description);
+  }
+}

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_poolakey/flutter_poolakey.dart';
 
 import 'data.dart';
@@ -74,6 +73,8 @@ class _MyHomePageState extends State<MyHomePage> {
     _productsMap["premium"] = ProductItem("premium", "upgrade_app", false);
     _productsMap["infinite_gas_monthly"] =
         ProductItem("infinite_gas_monthly", "get_infinite_gas", false);
+    _productsMap["trial_subscription"] =
+        ProductItem("trial_subscription", "get_infinite_gas_trial", false);
     var message = "";
     var rsaKey =
         "MIHNMA0GCSqGSIb3DQEBAQUAA4G7ADCBtwKBrwDbY/p0EgtJZHE6t9nVZ6QyzcR7e2O5RalVJx6Y+6Dc7n40FqdxAjHBYlptyZsdTg9r77JCS7UjEPXNuCHG5NCBLq/u7DWQQmh8otzMK6/P6nzsJUYvCqyNEu7cecaXmh5DgKlfRFpzNXBzBd4K3Xon8hBJjez/qdzvMtmHVFpdCSApUC0WTmT/kq1tDKLU1lDAEt10K83xZbi6lJWcAK20VUn+9KSVFxsr5WuXuWcCAwEAAQ==";
@@ -108,7 +109,15 @@ class _MyHomePageState extends State<MyHomePage> {
         await FlutterPoolakey.getInAppSkuDetails(_productsMap.keys.toList());
 
     for (var skuDetails in skuDetailsList) {
-      _productsMap[skuDetails.sku]?.skuDetails = skuDetails;
+      if (skuDetails.sku == "trial_subscription") {
+        var trialData = await FlutterPoolakey.checkTrialSubscription();
+        var trial = TrialSubscription.fromSkuDetails(skuDetails);
+        trial.isAvailable = trialData["isAvailable"];
+        trial.trialPeriodDays = trialData["trialPeriodDays"];
+        _productsMap[skuDetails.sku]?.skuDetails = skuDetails;
+      } else {
+        _productsMap[skuDetails.sku]?.skuDetails = skuDetails;
+      }
 
       // inject purchaseInfo
       PurchaseInfo? purchaseInfo;
@@ -123,11 +132,11 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> _handlePurchase(PurchaseInfo purchase) async {
-    _log(purchase.originalJson);
-    if (purchase.productId == "gas" ||
-        purchase.productId == "dynamic_price" ) {
+    _log(purchase.originalJson + "\n");
+    if (purchase.productId == "gas" || purchase.productId == "dynamic_price") {
       if (_gasLevel < 5) _gasLevel = (_gasLevel + 1).clamp(0, 4);
-    } else if (purchase.productId == "infinite_gas_monthly") {
+    } else if (purchase.productId == "infinite_gas_monthly" ||
+        purchase.productId == "trial_subscription") {
       _gasLevel = 5;
     } else if (purchase.productId == "premium") {
       _vehicleState = "premium";
@@ -152,13 +161,9 @@ class _MyHomePageState extends State<MyHomePage> {
     // than having to individually change instances of widgets.
     final size = MediaQuery.of(context).size;
     final items = _productsMap.values.toList();
-    final itemHeight = 88.0;
+    final itemHeight = 80.0;
+    final smallStyle = TextStyle(fontSize: 11);
     return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build methodx, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
       body: Container(
           width: size.width,
           height: size.height,
@@ -167,10 +172,11 @@ class _MyHomePageState extends State<MyHomePage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                // Header
                 Container(
                     color: Colors.green.withAlpha(44),
-                    height: 110,
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                    height: 128,
+                    padding: EdgeInsets.fromLTRB(20, 30, 20, 8),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
@@ -200,21 +206,18 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       ],
                     )),
+                // List
                 SizedBox(height: 6),
-                SizedBox(
-                  height: items.length * itemHeight,
-                  child: ListView.builder(
-                      itemExtent: itemHeight,
-                      itemBuilder: (c, i) => _itemBuilder(items[i]),
-                      itemCount: items.length),
-                ),
+                for (var i = 0; i < items.length; i++)
+                  _itemBuilder(items[i], smallStyle),
                 SizedBox(height: 6),
+                // Log View
                 Expanded(
                   child: SingleChildScrollView(
-//scrollable Text - > wrap in SingleChildScrollView -> wrap that in Expanded
                     child: Text(
                       _logText,
                       overflow: TextOverflow.visible,
+                      style: smallStyle,
                     ),
                   ),
                 )
@@ -258,21 +261,19 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {});
   }
 
-  Widget _itemBuilder(ProductItem item) {
-    var smallStyle = TextStyle(fontSize: 12);
+  Widget _itemBuilder(ProductItem item, TextStyle smallStyle) {
     var title = item.skuDetails == null ? "Title" : item.skuDetails!.title;
-    var description =
-        item.skuDetails == null ? "Description" : item.skuDetails!.description;
     var price = item.skuDetails == null ? "Price" : item.skuDetails!.price;
     return Stack(children: [
       Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
           child: Card(
+              margin: EdgeInsets.all(1),
               color: Theme.of(context).cardColor,
               child: InkWell(
                   onTap: () => _onItemTap(item),
                   child: Container(
-                      padding: EdgeInsets.all(8),
+                      padding: EdgeInsets.all(4),
                       child: IgnorePointer(
                           ignoring: true,
                           child: Row(
@@ -283,7 +284,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       Image.asset("assets/${item.icon}.png",
-                                          width: 80),
+                                          width: 72),
                                       Text(price,
                                           style: smallStyle,
                                           textDirection: TextDirection.rtl)
@@ -297,18 +298,14 @@ class _MyHomePageState extends State<MyHomePage> {
                                         children: [
                                       Text(title,
                                           textDirection: TextDirection.rtl),
-                                      item.id == "dynamic_price"
-                                          ? SizedBox(height: 32)
-                                          : Text(description,
-                                              style: smallStyle,
-                                              textDirection: TextDirection.rtl),
+                                      _getMessage(item, smallStyle)
                                     ])),
                               ])))))),
       item.id == "dynamic_price"
           ? Positioned(
-              right: 18,
-              bottom: 12,
-              width: 220,
+              right: 8,
+              bottom: 8,
+              width: 240,
               height: 32,
               child: TextField(
                 controller: _textController,
@@ -320,6 +317,22 @@ class _MyHomePageState extends State<MyHomePage> {
               ))
           : SizedBox()
     ]);
+  }
+
+  _getMessage(ProductItem item, TextStyle smallStyle) {
+    var description =
+        item.skuDetails == null ? "Description" : item.skuDetails!.description;
+    if (item.id == "dynamic_price") return SizedBox(height: 32);
+    if (item.id == "trial_subscription") {
+      if (item.skuDetails == null) return SizedBox(height: 32);
+      if (item.skuDetails is TrialSubscription) {
+        TrialSubscription trial = item.skuDetails as TrialSubscription;
+        return Text(": مهلت استفاده ${trial.trialPeriodDays} روز",
+            style: smallStyle);
+      }
+    }
+    return Text(description,
+        style: smallStyle, textDirection: TextDirection.rtl);
   }
 
   Future<void> _onItemTap(ProductItem item) async {
