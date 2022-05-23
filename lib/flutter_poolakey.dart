@@ -126,6 +126,13 @@ class FlutterPoolakey {
     return list.map((map) => PurchaseInfo.fromMap(map)).toList();
   }
 
+  /// Check Trial-Subscription existanse
+  /// 
+  /// It availbles if not subscribe any item.
+  static Future<Map> checkTrialSubscription() async {
+    return await _channel.invokeMethod("checkTrialSubscription");
+  }
+
   /// Queries a purchased product in the user's inventory
   ///
   /// It queries and finds a [PurchaseInfo] (or null if it doesn't find) using provided [productId]

@@ -88,6 +88,9 @@ class FlutterPoolakeyPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
                 val skuIds = call.argument<List<String>>("sku_ids")!!
                 getSubscriptionSkuDetails(skuIds, result)
             }
+            "checkTrialSubscription" -> {
+                checkTrialSubscription(result)
+            }
             else -> result.notImplemented()
         }
     }
@@ -160,6 +163,29 @@ class FlutterPoolakeyPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
             }
             consumeFailed {
                 result.error("CONSUME_FAILED", it.toString(), null)
+            }
+        }
+    }
+
+    private fun checkTrialSubscription(result: Result) {
+        if (paymentConnection.getState() != ConnectionState.Connected) {
+            result.error(
+                "PAYMENT_CONNECTION_IS_NOT_CONNECTED",
+                "PaymentConnection is not connected (state: ${paymentConnection.getState()})",
+                null
+            )
+            return
+        }
+        payment.checkTrialSubscription {
+            checkTrialSubscriptionSucceed { trialSubscriptionInfo ->
+                result.success(hashMapOf(
+                    "isAvailable" to trialSubscriptionInfo.isAvailable,
+                    "trialPeriodDays" to trialSubscriptionInfo.trialPeriodDays))
+            }
+
+            checkTrialSubscriptionFailed {
+                result.error("CHECK_TRIAL_FAILED", it.toString(), null)
+
             }
         }
     }
