@@ -126,9 +126,7 @@ class FlutterPoolakeyPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
     }
 
     private fun disconnect(result: Result){
-        if (paymentConnection.getState() == ConnectionState.Connected){
-            paymentConnection.disconnect()
-        }
+        paymentConnection.disconnect()
         result.success(null)
     }
 
