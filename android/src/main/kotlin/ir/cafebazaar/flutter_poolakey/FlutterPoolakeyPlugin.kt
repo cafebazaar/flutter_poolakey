@@ -49,6 +49,9 @@ class FlutterPoolakeyPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
             "connect" -> {
                 val inAppBillingKey = call.argument<String>("in_app_billing_key")
                 connect(inAppBillingKey, result)
+            } 
+            "disconnect" -> {
+                disconnect(result)
             }
             "purchase" -> {
                 startActivity(
@@ -120,6 +123,13 @@ class FlutterPoolakeyPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
                 channel.invokeMethod("disconnected", null)
             }
         }
+    }
+
+    private fun disconnect(result: Result){
+        if (paymentConnection.getState() == ConnectionState.Connected){
+            paymentConnection.disconnect()
+        }
+        result.success(null)
     }
 
     fun startActivity(
