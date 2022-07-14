@@ -51,6 +51,15 @@ class FlutterPoolakey {
     });
   }
 
+
+  ///To avoid problems such as Memory Leak, 
+  ///you must disconnect from the market in the dispose method of your page widget
+  /// or when you no longer have anything to do with it:
+  static Future<void> disconnect() async {
+    return _channel.invokeMethod('disconnect');
+  }
+
+
   /// Initiates the purchase flow
   ///
   /// [productId] is your product's identifier (also known as SKU).
