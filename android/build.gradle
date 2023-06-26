@@ -3,7 +3,7 @@ version '2.0.0'
 
 buildscript {
     ext.kotlin_version = '1.5.20'
-    ext.poolakey_version = '2.0.0'
+    ext.poolakey_version = '2.1.0'
     repositories {
         google()
         mavenCentral()
