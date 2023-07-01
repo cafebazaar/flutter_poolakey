@@ -280,7 +280,9 @@ class FlutterPoolakeyPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
         activityBinding = null
         purchaseCallback = null
         channel.setMethodCallHandler(null)
-        paymentConnection.disconnect()
+        if(::paymentConnection.isInitialized){
+            paymentConnection.disconnect()
+        }
     }
 
     override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
