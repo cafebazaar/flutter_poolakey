@@ -1,15 +1,16 @@
 name: flutter_poolakey
 description: flutter_poolakey is a wrapper around the `Poolakey` to use in Flutter. Poolakey is an Android In-App Billing SDK for `Cafe Bazaar` App Store. All specific features in payment of Cafe Bazaar, will be added on `Poolakey`.
-version: 2.0.1
+version: 2.1.0
 homepage: https://github.com/cafebazaar/flutter_poolakey
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
-  flutter: ">=1.20.0"
+  sdk: '>=3.0.6 <4.0.0'
+  flutter: ">=3.3.0"
 
 dependencies:
   flutter:
     sdk: flutter
+  plugin_platform_interface: ^2.0.2
 
 dev_dependencies:
   flutter_test:
