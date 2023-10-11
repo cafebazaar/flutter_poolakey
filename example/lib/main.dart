@@ -183,7 +183,7 @@ class _MyHomePageState extends State<MyHomePage> {
       PurchaseInfo? response = await FlutterPoolakey.subscribe(productId,
           payload: payload, dynamicPriceToken: dynamicPriceToken ?? "");
     } catch (e) {
-      showSnackBar(e.toString());
+      showSnackBar("subscribeProduct ${e.toString()}");
       return;
     }
   }
@@ -200,8 +200,11 @@ class _MyHomePageState extends State<MyHomePage> {
     try {
       PurchaseInfo? response = await FlutterPoolakey.purchase(productId,
           payload: payload, dynamicPriceToken: dynamicPriceToken ?? "");
+      if (consume) {
+        consumePurchasedItem(response.purchaseToken);
+      }
     } catch (e) {
-      showSnackBar(e.toString());
+      showSnackBar("purchaseProduct ${e.toString()}");
       return;
     }
   }
@@ -215,8 +218,15 @@ class _MyHomePageState extends State<MyHomePage> {
     try {
       List<PurchaseInfo>? response =
           await FlutterPoolakey.getAllSubscribedProducts();
+      bool result = response
+          .any((element) => element.productId == productIdController.text);
+      if (result) {
+        showSnackBar("User has bought this item");
+      } else {
+        showSnackBar("User has not bought this item");
+      }
     } catch (e) {
-      showSnackBar(e.toString());
+      showSnackBar("checkUserSubscribedItem ${e.toString()}");
       return;
     }
   }
@@ -230,8 +240,15 @@ class _MyHomePageState extends State<MyHomePage> {
     try {
       List<PurchaseInfo>? response =
           await FlutterPoolakey.getAllPurchasedProducts();
+      bool result = response
+          .any((element) => element.productId == productIdController.text);
+      if (result) {
+        showSnackBar("User has bought this item");
+      } else {
+        showSnackBar("User has not bought this item");
+      }
     } catch (e) {
-      showSnackBar(e.toString());
+      showSnackBar("checkUserPurchasedItem ${e.toString()}");
       return;
     }
   }
@@ -245,8 +262,9 @@ class _MyHomePageState extends State<MyHomePage> {
     try {
       List<SkuDetails>? response =
           await FlutterPoolakey.getSubscriptionSkuDetails([skuValueInput]);
+      showSnackBar("Detail Of Subscription Item ${response.toString()}");
     } catch (e) {
-      showSnackBar(e.toString());
+      showSnackBar("getSkuDetailOfSubscriptionItem ${e.toString()}");
       return;
     }
   }
@@ -260,8 +278,9 @@ class _MyHomePageState extends State<MyHomePage> {
     try {
       List<SkuDetails>? response =
           await FlutterPoolakey.getInAppSkuDetails([skuValueInput]);
+      showSnackBar("Detail Of InApp Item ${response.toString()}");
     } catch (e) {
-      showSnackBar(e.toString());
+      showSnackBar("getSkuDetailOfInAppItem ${e.toString()}");
       return;
     }
   }
@@ -274,8 +293,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
     try {
       Map response = await FlutterPoolakey.checkTrialSubscription();
+      showSnackBar("isAvailable ${response["isAvailable"].toString()}");
     } catch (e) {
-      showSnackBar(e.toString());
+      showSnackBar("checkTrialSubscription ${e.toString()}");
       return;
     }
   }
@@ -288,6 +308,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     try {
       bool? response = await FlutterPoolakey.consume(purchaseToken);
+      showSnackBar("consumePurchasedItem success $response");
     } catch (e) {
       showSnackBar(e.toString());
       return;
