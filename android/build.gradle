@@ -1,9 +1,9 @@
 group 'ir.cafebazaar.flutter_poolakey'
-version '2.1.0'
+version '2.2.0'
 
 buildscript {
     ext.kotlin_version = '1.7.10'
-    ext.poolakey_version = '2.1.0'
+    ext.poolakey_version = '2.2.0'
     repositories {
         jcenter()
         maven { url "https://jitpack.io" }
@@ -55,8 +55,8 @@ android {
 
     defaultConfig {
         minSdkVersion 16
-        versionCode 200100
-        versionName "2.1.0"
+        versionCode 200200
+        versionName "2.2.0"
     }
 
     buildTypes {
