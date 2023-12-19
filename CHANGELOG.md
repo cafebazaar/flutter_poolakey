@@ -1,3 +1,7 @@
+## 2.2.0
+* Upgrade Poolakey dependency to 2.2.0
+* Update README.md
+
 ## 1.3.0
 * Add (trivial) example project.
 * Upgrade Poolakey dependency to 1.2.3
