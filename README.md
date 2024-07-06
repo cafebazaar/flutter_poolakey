@@ -22,6 +22,16 @@ Then run the below command to retrieve it:
 flutter packages get
 ```
 
+And then Go to the allprojects section of your project gradle file and add the JitPack repository to the repositories block:
+```groovy
+allprojects {
+  repositories {
+    // add JitPack
+    maven { url 'https://jitpack.io' }
+  }
+} 
+```
+
 ### Import it
 
 Now in your Dart code, you can use:
