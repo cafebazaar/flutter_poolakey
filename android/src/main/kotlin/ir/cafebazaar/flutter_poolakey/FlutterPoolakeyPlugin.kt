@@ -37,7 +37,7 @@ class FlutterPoolakeyPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {
         activityBinding = binding
         channel =
-            MethodChannel(flutterPluginBinding.binaryMessenger, "ir.cafebazaar.flutter_poolakey")
+                MethodChannel(flutterPluginBinding.binaryMessenger, "ir.cafebazaar.flutter_poolakey")
         channel.setMethodCallHandler(this)
     }
 
@@ -46,54 +46,65 @@ class FlutterPoolakeyPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
             "version" -> {
                 getVersion(result);
             }
+
             "connect" -> {
                 val inAppBillingKey = call.argument<String>("in_app_billing_key")
                 connect(inAppBillingKey, result)
-            } 
+            }
+
             "disconnect" -> {
                 disconnect(result)
             }
+
             "purchase" -> {
                 startActivity(
-                    activity = requireActivity,
-                    command = PaymentActivity.Command.Purchase,
-                    productId = call.argument<String>("product_id")!!,
-                    result = result,
-                    payload = call.argument<String>("payload"),
-                    dynamicPriceToken = call.argument<String>("dynamicPriceToken"),
+                        activity = requireActivity,
+                        command = PaymentActivity.Command.Purchase,
+                        productId = call.argument<String>("product_id")!!,
+                        result = result,
+                        payload = call.argument<String>("payload"),
+                        dynamicPriceToken = call.argument<String>("dynamicPriceToken"),
                 )
             }
+
             "subscribe" -> {
                 startActivity(
-                    activity = requireActivity,
-                    command = PaymentActivity.Command.Subscribe,
-                    productId = call.argument<String>("product_id")!!,
-                    result = result,
-                    payload = call.argument<String>("payload"),
-                    dynamicPriceToken = call.argument<String>("dynamicPriceToken"),
+                        activity = requireActivity,
+                        command = PaymentActivity.Command.Subscribe,
+                        productId = call.argument<String>("product_id")!!,
+                        result = result,
+                        payload = call.argument<String>("payload"),
+                        dynamicPriceToken = call.argument<String>("dynamicPriceToken"),
                 )
             }
+
             "consume" -> {
                 val purchaseToken = call.argument<String>("purchase_token")!!
                 consume(purchaseToken, result)
             }
+
             "get_all_purchased_products" -> {
                 getAllPurchasedProducts(result)
             }
+
             "get_all_subscribed_products" -> {
                 getAllSubscribedProducts(result)
             }
+
             "get_in_app_sku_details" -> {
                 val skuIds = call.argument<List<String>>("sku_ids")!!
                 getInAppSkuDetails(skuIds, result)
             }
+
             "get_subscription_sku_details" -> {
                 val skuIds = call.argument<List<String>>("sku_ids")!!
                 getSubscriptionSkuDetails(skuIds, result)
             }
+
             "checkTrialSubscription" -> {
                 checkTrialSubscription(result)
             }
+
             else -> result.notImplemented()
         }
     }
@@ -114,10 +125,10 @@ class FlutterPoolakeyPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
 
         paymentConnection = payment.connect {
             connectionSucceed {
-                result.success(true)
+                channel.invokeMethod("connectSuccess", null)
             }
             connectionFailed {
-                result.error("CONNECTION_HAS_FAILED", it.toString(), null)
+                channel.invokeMethod("connectFailed", null)
             }
             disconnected {
                 channel.invokeMethod("disconnected", null)
@@ -125,20 +136,20 @@ class FlutterPoolakeyPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
         }
     }
 
-    private fun disconnect(result: Result){
+    private fun disconnect(result: Result) {
         paymentConnection.disconnect()
         result.success(null)
     }
 
     fun startActivity(
-        activity: Activity,
-        command: PaymentActivity.Command,
-        productId: String,
-        result: Result,
-        payload: String
-        ?,
-        dynamicPriceToken: String
-        ?
+            activity: Activity,
+            command: PaymentActivity.Command,
+            productId: String,
+            result: Result,
+            payload: String
+            ?,
+            dynamicPriceToken: String
+            ?
     ) {
         if (paymentConnection.getState() != ConnectionState.Connected) {
             result.error("PURCHASE_FAILED", "In order to purchasing, connect to Poolakey!", null)
@@ -146,22 +157,22 @@ class FlutterPoolakeyPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
         }
 
         PaymentActivity.start(
-            activity,
-            command,
-            productId,
-            payment,
-            result,
-            payload,
-            dynamicPriceToken
+                activity,
+                command,
+                productId,
+                payment,
+                result,
+                payload,
+                dynamicPriceToken
         )
     }
 
     private fun consume(purchaseToken: String, result: Result) {
         if (paymentConnection.getState() != ConnectionState.Connected) {
             result.error(
-                "PAYMENT_CONNECTION_IS_NOT_CONNECTED",
-                "PaymentConnection is not connected (state: ${paymentConnection.getState()})",
-                null
+                    "PAYMENT_CONNECTION_IS_NOT_CONNECTED",
+                    "PaymentConnection is not connected (state: ${paymentConnection.getState()})",
+                    null
             )
             return
         }
@@ -178,17 +189,17 @@ class FlutterPoolakeyPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
     private fun checkTrialSubscription(result: Result) {
         if (paymentConnection.getState() != ConnectionState.Connected) {
             result.error(
-                "PAYMENT_CONNECTION_IS_NOT_CONNECTED",
-                "PaymentConnection is not connected (state: ${paymentConnection.getState()})",
-                null
+                    "PAYMENT_CONNECTION_IS_NOT_CONNECTED",
+                    "PaymentConnection is not connected (state: ${paymentConnection.getState()})",
+                    null
             )
             return
         }
         payment.checkTrialSubscription {
             checkTrialSubscriptionSucceed { trialSubscriptionInfo ->
                 result.success(hashMapOf(
-                    "isAvailable" to trialSubscriptionInfo.isAvailable,
-                    "trialPeriodDays" to trialSubscriptionInfo.trialPeriodDays))
+                        "isAvailable" to trialSubscriptionInfo.isAvailable,
+                        "trialPeriodDays" to trialSubscriptionInfo.trialPeriodDays))
             }
 
             checkTrialSubscriptionFailed {
@@ -201,9 +212,9 @@ class FlutterPoolakeyPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
     private fun getAllPurchasedProducts(result: Result) {
         if (paymentConnection.getState() != ConnectionState.Connected) {
             result.error(
-                "PAYMENT_CONNECTION_IS_NOT_CONNECTED",
-                "PaymentConnection is not connected (state: ${paymentConnection.getState()})",
-                null
+                    "PAYMENT_CONNECTION_IS_NOT_CONNECTED",
+                    "PaymentConnection is not connected (state: ${paymentConnection.getState()})",
+                    null
             )
             return
         }
@@ -220,9 +231,9 @@ class FlutterPoolakeyPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
     private fun getAllSubscribedProducts(result: Result) {
         if (paymentConnection.getState() != ConnectionState.Connected) {
             result.error(
-                "PAYMENT_CONNECTION_IS_NOT_CONNECTED",
-                "PaymentConnection is not connected (state: ${paymentConnection.getState()})",
-                null
+                    "PAYMENT_CONNECTION_IS_NOT_CONNECTED",
+                    "PaymentConnection is not connected (state: ${paymentConnection.getState()})",
+                    null
             )
             return
         }
@@ -239,9 +250,9 @@ class FlutterPoolakeyPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
     private fun getInAppSkuDetails(skuIds: List<String>, result: Result) {
         if (paymentConnection.getState() != ConnectionState.Connected) {
             result.error(
-                "PAYMENT_CONNECTION_IS_NOT_CONNECTED",
-                "PaymentConnection is not connected (state: ${paymentConnection.getState()})",
-                null
+                    "PAYMENT_CONNECTION_IS_NOT_CONNECTED",
+                    "PaymentConnection is not connected (state: ${paymentConnection.getState()})",
+                    null
             )
             return
         }
@@ -259,9 +270,9 @@ class FlutterPoolakeyPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
     private fun getSubscriptionSkuDetails(skuIds: List<String>, result: Result) {
         if (paymentConnection.getState() != ConnectionState.Connected) {
             result.error(
-                "PAYMENT_CONNECTION_IS_NOT_CONNECTED",
-                "PaymentConnection is not connected (state: ${paymentConnection.getState()})",
-                null
+                    "PAYMENT_CONNECTION_IS_NOT_CONNECTED",
+                    "PaymentConnection is not connected (state: ${paymentConnection.getState()})",
+                    null
             )
             return
         }
@@ -288,7 +299,7 @@ class FlutterPoolakeyPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
         activityBinding = null
         purchaseCallback = null
         channel.setMethodCallHandler(null)
-        if(::paymentConnection.isInitialized){
+        if (::paymentConnection.isInitialized) {
             paymentConnection.disconnect()
         }
     }
