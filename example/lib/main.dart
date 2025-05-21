@@ -8,42 +8,21 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Trivial Example for Flutter-Poolakey',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
         primarySwatch: Colors.green,
         brightness: Brightness.dark,
       ),
-      home: const MyHomePage(title: 'Trivial Example for Flutter-Poolakey'),
+      home: const MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
+  const MyHomePage({super.key});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -58,8 +37,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
-    _initShop();
     super.initState();
+    _initShop();
   }
 
   Future<void> _initShop() async {
@@ -70,20 +49,20 @@ class _MyHomePageState extends State<MyHomePage> {
         rsaKey,
         onSucceed: () {
           connected = true;
-          _updateState("Service: Connected");
+          _updateState("Connected");
         },
         onFailed: () {
           connected = false;
-          _updateState("Service: Not Connected");
+          _updateState("Not Connected");
         },
         onDisconnected: () {
           connected = false;
-          _updateState("Service: Not Connected");
+          _updateState("Not Connected");
         },
       );
     } on Exception catch (e) {
       showSnackBar(e.toString());
-      _updateState("Service: Failed to Connect");
+      _updateState("Failed to Connect");
     }
   }
 
@@ -103,7 +82,7 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(status),
+              Text('Service: $status'),
               const SizedBox(height: 8),
               TextField(
                 controller: productIdController,
@@ -125,51 +104,59 @@ class _MyHomePageState extends State<MyHomePage> {
                   Text('Consume Purchase'),
                   Spacer(),
                   Switch(
-                      value: consume,
-                      onChanged: (checked) {
-                        setState(() {
-                          consume = checked;
-                        });
-                      }),
+                    value: consume,
+                    onChanged: (checked) {
+                      setState(() {
+                        consume = checked;
+                      });
+                    },
+                  ),
                 ],
               ),
               FilledButton(
-                  onPressed: () {
-                    purchaseProduct(
-                      productIdController.text,
-                      "purchasePayload",
-                      dynamicPriceTokenController.text,
-                    );
-                  },
-                  child: Text('Purchase')),
+                onPressed: () {
+                  purchaseProduct(
+                    productIdController.text,
+                    "purchasePayload",
+                    dynamicPriceTokenController.text,
+                  );
+                },
+                child: Text('Purchase'),
+              ),
               FilledButton(
-                  onPressed: () {
-                    subscribeProduct(
-                      productIdController.text,
-                      "subscribePayload",
-                      dynamicPriceTokenController.text,
-                    );
-                  },
-                  child: Text('Subscribe')),
+                onPressed: () {
+                  subscribeProduct(
+                    productIdController.text,
+                    "subscribePayload",
+                    dynamicPriceTokenController.text,
+                  );
+                },
+                child: Text('Subscribe'),
+              ),
               FilledButton(
-                  onPressed: checkUserPurchasedItem,
-                  child: Text('Check if user purchased this item')),
+                onPressed: checkUserPurchasedItem,
+                child: Text('Check if user purchased this item'),
+              ),
               FilledButton(
-                  onPressed: checkUserSubscribedItem,
-                  child: Text('Check if user subscribed this item')),
+                onPressed: checkUserSubscribedItem,
+                child: Text('Check if user subscribed this item'),
+              ),
               FilledButton(
-                  onPressed: () {
-                    getSkuDetailOfInAppItem(productIdController.text);
-                  },
-                  child: Text('Get Sku detail of in-app item')),
+                onPressed: () {
+                  getSkuDetailOfInAppItem(productIdController.text);
+                },
+                child: Text('Get Sku detail of in-app item'),
+              ),
               FilledButton(
-                  onPressed: () {
-                    getSkuDetailOfSubscriptionItem(productIdController.text);
-                  },
-                  child: Text('Get Sku detail of subscription item')),
+                onPressed: () {
+                  getSkuDetailOfSubscriptionItem(productIdController.text);
+                },
+                child: Text('Get Sku detail of subscription item'),
+              ),
               FilledButton(
-                  onPressed: checkTrialSubscription,
-                  child: Text('Check Trial subscription'))
+                onPressed: checkTrialSubscription,
+                child: Text('Check Trial subscription'),
+              ),
             ],
           ),
         ),
@@ -188,8 +175,13 @@ class _MyHomePageState extends State<MyHomePage> {
     }
 
     try {
-      PurchaseInfo? response = await FlutterPoolakey.subscribe(productId,
-          payload: payload, dynamicPriceToken: dynamicPriceToken ?? "");
+      PurchaseInfo? response = await FlutterPoolakey.subscribe(
+        productId,
+        payload: payload,
+        dynamicPriceToken: dynamicPriceToken ?? "",
+      );
+
+      showSnackBar("subscribeProduct $response");
     } catch (e) {
       showSnackBar("subscribeProduct ${e.toString()}");
       return;
@@ -206,8 +198,11 @@ class _MyHomePageState extends State<MyHomePage> {
       return;
     }
     try {
-      PurchaseInfo? response = await FlutterPoolakey.purchase(productId,
-          payload: payload, dynamicPriceToken: dynamicPriceToken ?? "");
+      PurchaseInfo? response = await FlutterPoolakey.purchase(
+        productId,
+        payload: payload,
+        dynamicPriceToken: dynamicPriceToken ?? "",
+      );
       if (consume) {
         consumePurchasedItem(response.purchaseToken);
       }
@@ -226,8 +221,9 @@ class _MyHomePageState extends State<MyHomePage> {
     try {
       List<PurchaseInfo>? response =
           await FlutterPoolakey.getAllSubscribedProducts();
-      bool result = response
-          .any((element) => element.productId == productIdController.text);
+      bool result = response.any(
+        (element) => element.productId == productIdController.text,
+      );
       if (result) {
         showSnackBar("User has bought this item");
       } else {
@@ -248,8 +244,9 @@ class _MyHomePageState extends State<MyHomePage> {
     try {
       List<PurchaseInfo>? response =
           await FlutterPoolakey.getAllPurchasedProducts();
-      bool result = response
-          .any((element) => element.productId == productIdController.text);
+      bool result = response.any(
+        (element) => element.productId == productIdController.text,
+      );
       if (result) {
         showSnackBar("User has bought this item");
       } else {
@@ -284,8 +281,9 @@ class _MyHomePageState extends State<MyHomePage> {
     }
 
     try {
-      List<SkuDetails>? response =
-          await FlutterPoolakey.getInAppSkuDetails([skuValueInput]);
+      List<SkuDetails>? response = await FlutterPoolakey.getInAppSkuDetails([
+        skuValueInput,
+      ]);
       showSnackBar("Detail Of InApp Item ${response.toString()}");
     } catch (e) {
       showSnackBar("getSkuDetailOfInAppItem ${e.toString()}");
@@ -324,8 +322,9 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void showSnackBar(String message) {
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text(message)));
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
