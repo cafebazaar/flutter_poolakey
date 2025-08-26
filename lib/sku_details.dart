@@ -18,7 +18,8 @@ class SkuDetails {
   }
 
   @override
-  String toString() => 'sku: $sku,'
+  String toString() =>
+      'sku: $sku,'
       '\ntype: $type,'
       '\nprice: $price,'
       '\ntitle: $title,'

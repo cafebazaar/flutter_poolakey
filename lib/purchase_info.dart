@@ -10,15 +10,16 @@ class PurchaseInfo {
   final String dataSignature;
 
   PurchaseInfo(
-      this.orderId,
-      this.purchaseToken,
-      this.payload,
-      this.packageName,
-      this.purchaseState,
-      this.purchaseTime,
-      this.productId,
-      this.originalJson,
-      this.dataSignature);
+    this.orderId,
+    this.purchaseToken,
+    this.payload,
+    this.packageName,
+    this.purchaseState,
+    this.purchaseTime,
+    this.productId,
+    this.originalJson,
+    this.dataSignature,
+  );
 
   factory PurchaseInfo.fromMap(Map<dynamic, dynamic> typeName) {
     return PurchaseInfo(
@@ -35,7 +36,8 @@ class PurchaseInfo {
   }
 
   @override
-  String toString() => 'orderId: $orderId,'
+  String toString() =>
+      'orderId: $orderId,'
       '\npurchaseToken: $purchaseToken,'
       '\npayload: $payload,'
       '\npackageName: $packageName,'
